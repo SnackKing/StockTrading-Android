@@ -44,6 +44,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
+        if(auth.currentUser != null){
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
         // Set up the login form.
         email_sign_in_button.setOnClickListener { attemptLogin() }
         go_sign_up.setOnClickListener { startActivity(Intent(this, SignupActivity::class.java)) }
@@ -72,6 +75,7 @@ class LoginActivity : AppCompatActivity() {
                         val user = auth.currentUser
                         Toast.makeText(baseContext, "Authentication Successful.",
                                 Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, HomeActivity::class.java))
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.exception)
