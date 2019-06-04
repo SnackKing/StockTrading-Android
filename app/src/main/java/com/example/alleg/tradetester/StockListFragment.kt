@@ -6,12 +6,18 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import com.example.alleg.tradetester.dummy.DummyContent
 import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import android.support.v7.widget.DefaultItemAnimator
+
+
 
 /**
  * A fragment representing a list of Items.
@@ -20,14 +26,21 @@ import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
  */
 class StockListFragment : Fragment() {
 
-    // TODO: Customize parameters
+    val TAG:String = "STOCKLISTFRAG"
     private var columnCount = 1
-
+    lateinit var auth: FirebaseAuth
+    lateinit var database: DatabaseReference
+    lateinit var uid:String
     private var listener: OnListFragmentInteractionListener? = null
+    private lateinit var ownedView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        auth = FirebaseAuth.getInstance()
+        uid = auth.currentUser?.uid ?: ""
+        database = FirebaseDatabase.getInstance().reference
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
@@ -36,18 +49,41 @@ class StockListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+        ownedView = view.findViewById<RecyclerView>(R.id.ownedList)
+        ownedView.setLayoutManager(LinearLayoutManager(getActivity()));
+        readDataAndCreateAdapter()
+        ownedView.setItemAnimator(DefaultItemAnimator())
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
+
+
+        return view
+    }
+
+    fun readDataAndCreateAdapter(){
+        val userReference = FirebaseDatabase.getInstance().reference.child("users").child(uid).child("owned")
+        val stockListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    val ownedList = arrayListOf<Stock>()
+                    val children = dataSnapshot.children
+                    children.forEach{
+                        var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f)
+                        ownedList.add(curStock)
+                    }
+
+                    ownedView.adapter = MyItemRecyclerViewAdapter(ownedList, listener)
+
                 }
-                adapter = MyItemRecyclerViewAdapter(DummyContent.ITEMS, listener)
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                // ...
             }
         }
-        return view
+        userReference.addValueEventListener(stockListener)
     }
 
     override fun onAttach(context: Context) {
@@ -77,7 +113,7 @@ class StockListFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: Stock)
     }
 
     companion object {
