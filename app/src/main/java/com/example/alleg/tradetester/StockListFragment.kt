@@ -16,7 +16,13 @@ import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import android.support.v7.widget.DefaultItemAnimator
-
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.fragment_item.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 /**
@@ -66,13 +72,53 @@ class StockListFragment : Fragment() {
                 if(dataSnapshot.getValue() != null){
                     val ownedList = arrayListOf<Stock>()
                     val children = dataSnapshot.children
+                    var symbolGroup = arrayListOf<String>()
+                    var symString = ""
+                    var index = 0
                     children.forEach{
-                        var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f)
+                        if(index % 5 == 0 && index != 0){
+                            symString = symString.removeSuffix(",")
+                            symbolGroup.add(symString)
+                            symString = ""
+                        }
+                        var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f, numOwned = 1)
                         ownedList.add(curStock)
+                        symString += it.key + ','
+                        index++
                     }
-
+                    if(!symString.equals("")) symbolGroup.add(symString.removeSuffix(","))
+                    addPrices(ownedList, symbolGroup)
                     ownedView.adapter = MyItemRecyclerViewAdapter(ownedList, listener)
 
+
+                }
+
+            }
+            fun addPrices(ownedList: List<Stock>,symbolGroup:List<String> ){
+                symbolGroup.forEach {
+                    val queue = Volley.newRequestQueue(context)
+                    var url = "https://www.worldtradingdata.com/api/v1/stock?"
+                    url += "api_token=mkUwgwc7TADeShHuZO7D2RRbeLu1b9PNd6Ptey0LkIeRliCUjdLJJB9UE4UX"
+                    url += "&symbol=" + it
+                    val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
+                            Response.Listener { response ->
+                                var data:JSONArray = response.getJSONArray("data")
+                                print(data)
+                               for(i in 0..data.length()-1){
+                                   val stock:JSONObject = data.getJSONObject(i)
+                                   ownedList.get(i).change = stock.get("day_change").toString().toFloat()
+                                   ownedList.get(i).price = stock.get("price").toString().toFloat()
+                               }
+                                ownedView.adapter.notifyDataSetChanged()
+
+                            },
+
+                            Response.ErrorListener { error ->
+                                // TODO: Handle error
+                            }
+                    )
+                    val st = jsonObjectRequest.toString()
+                    queue.add(jsonObjectRequest)
                 }
 
             }
