@@ -75,9 +75,10 @@ class StockListFragment : Fragment() {
                     val children = dataSnapshot.children
                     var symbolGroup = arrayListOf<String>()
                     var symString = ""
-                    var index = 0
+                    var symbol_index = HashMap<String,Int>()
+                    var localIndex = 0
                     children.forEach{
-                        if(index % 5 == 0 && index != 0){
+                        if(localIndex % 5 == 0 && localIndex != 0){
                             symString = symString.removeSuffix(",")
                             symbolGroup.add(symString)
                             symString = ""
@@ -85,17 +86,18 @@ class StockListFragment : Fragment() {
                         var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f, numOwned = 1)
                         ownedList.add(curStock)
                         symString += it.key + ','
-                        index++
+                        symbol_index[it.key] = localIndex
+                        localIndex++
                     }
                     if(!symString.equals("")) symbolGroup.add(symString.removeSuffix(","))
-                    addPrices(ownedList, symbolGroup)
+                    addPrices(ownedList, symbolGroup,symbol_index)
                     ownedView.adapter = MyItemRecyclerViewAdapter(ownedList, listener)
 
 
                 }
 
             }
-            fun addPrices(ownedList: List<Stock>,symbolGroup:List<String> ){
+            fun addPrices(ownedList: List<Stock>,symbolGroup:List<String> , symbol_index: Map<String,Int>){
                 symbolGroup.forEach {
                     val queue = Volley.newRequestQueue(context)
                     var url = "https://www.worldtradingdata.com/api/v1/stock?"
@@ -107,8 +109,8 @@ class StockListFragment : Fragment() {
                                 print(data)
                                for(i in 0..data.length()-1){
                                    val stock:JSONObject = data.getJSONObject(i)
-                                   ownedList.get(index).change = stock.get("day_change").toString().toFloat()
-                                   ownedList.get(index).price = stock.get("price").toString().toFloat()
+                                   ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
+                                   ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
                                    index++
                                }
                                 ownedView.adapter.notifyDataSetChanged()
