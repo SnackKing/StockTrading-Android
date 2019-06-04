@@ -41,6 +41,7 @@ class StockListFragment : Fragment() {
     private lateinit var ownedView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
+    private var index:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +107,9 @@ class StockListFragment : Fragment() {
                                 print(data)
                                for(i in 0..data.length()-1){
                                    val stock:JSONObject = data.getJSONObject(i)
-                                   ownedList.get(i).change = stock.get("day_change").toString().toFloat()
-                                   ownedList.get(i).price = stock.get("price").toString().toFloat()
+                                   ownedList.get(index).change = stock.get("day_change").toString().toFloat()
+                                   ownedList.get(index).price = stock.get("price").toString().toFloat()
+                                   index++
                                }
                                 ownedView.adapter.notifyDataSetChanged()
 
