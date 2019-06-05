@@ -11,6 +11,12 @@ import com.example.alleg.tradetester.StockListFragment.OnListFragmentInteraction
 import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.fragment_item.view.*
+import com.example.alleg.tradetester.MyItemRecyclerViewAdapter.VHHeader
+import kotlinx.android.synthetic.main.owned_header.view.*
+import android.R.attr.data
+
+
+
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
@@ -21,10 +27,11 @@ import kotlinx.android.synthetic.main.fragment_item.view.*
 class MyItemRecyclerViewAdapter(
         private val mValues: List<Stock>,
         private val mListener: OnListFragmentInteractionListener?)
-    : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+
 
     private val mOnClickListener: View.OnClickListener
-
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Stock
@@ -34,27 +41,73 @@ class MyItemRecyclerViewAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_item, parent, false)
-        return ViewHolder(view)
+    private val TYPE_HEADER = 0
+    private val TYPE_ITEM = 1
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+        if (viewType == TYPE_ITEM) {
+            //inflate your layout and pass it to view holder
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.fragment_item, parent, false)
+            return VHItem(view)
+        } else if (viewType == TYPE_HEADER) {
+            //inflate your layout and pass it to view holder
+            val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.owned_header, parent, false)
+            return VHHeader(view);
+        }
+
+        throw  RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mValues[position]
-        holder.mSymbolView.text = item.symbol
-        holder.mNameView.text = item.name
-        holder.mPriceView.text = (item.price).toString()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        with(holder.mView) {
-            tag = item
-            setOnClickListener(mOnClickListener)
+
+
+        if (holder is VHItem) {
+            val item = mValues[position-1]
+            //cast holder to VHItem and set data
+            holder.mSymbolView.text = item.symbol
+            holder.mNameView.text = item.name
+            holder.mPriceView.text = (item.price).toString()
+            with(holder.itemView) {
+                tag = item
+                setOnClickListener(mOnClickListener)
+            }
+        } else if (holder is VHHeader) {
+            //cast holder to VHHeader and set data for header.
+            holder.textview!!.text = "Stocks you own"
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (isPositionHeader(position)) TYPE_HEADER else TYPE_ITEM
+
+    }
+
+    private fun isPositionHeader(position: Int): Boolean {
+        return position == 0
+    }
+
+    private fun getItem(position: Int): Stock {
+        return mValues.get(position-1)
     }
 
     override fun getItemCount(): Int = mValues.size
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    internal inner class VHItem(mView: View) : RecyclerView.ViewHolder(mView) {
+        val mSymbolView: TextView = mView.symbol
+        val mNameView: TextView = mView.companyName
+        val mPriceView: TextView = mView.price
+
+    }
+
+    internal inner class VHHeader(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var textview: TextView = itemView.owned_header
+    }
+
+    open inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mSymbolView: TextView = mView.symbol
         val mNameView: TextView = mView.companyName
         val mPriceView: TextView = mView.price

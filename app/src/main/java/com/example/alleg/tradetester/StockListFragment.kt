@@ -21,8 +21,12 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.fragment_item.*
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONObject
+import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader
+
+
 
 
 /**
@@ -57,6 +61,7 @@ class StockListFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
         ownedView = view.findViewById<RecyclerView>(R.id.ownedList)
+
         ownedView.setLayoutManager(LinearLayoutManager(getActivity()));
         readDataAndCreateAdapter()
         ownedView.setItemAnimator(DefaultItemAnimator())
