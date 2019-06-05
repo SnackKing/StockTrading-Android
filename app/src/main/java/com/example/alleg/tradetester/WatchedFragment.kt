@@ -111,6 +111,8 @@ class WatchedFragment : Fragment() {
                                     val stock:JSONObject = data.getJSONObject(i)
                                     ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
                                     ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
+                                    ownedList.get(symbol_index[stock.get("symbol")]!!).name = stock.get("name").toString()
+
                                     index++
                                 }
                                 ownedView.adapter.notifyDataSetChanged()

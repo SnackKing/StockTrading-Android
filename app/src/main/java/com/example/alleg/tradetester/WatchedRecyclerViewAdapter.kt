@@ -44,6 +44,7 @@ class WatchedRecyclerViewAdapter(
         holder.mSymbolView.text = item.symbol
         holder.mNameView.text = item.name
         holder.mPriceView.text = (item.price).toString()
+        holder.mChangeView.text = (item.change).toString()
 
         with(holder.mView) {
             tag = item
@@ -57,6 +58,7 @@ class WatchedRecyclerViewAdapter(
         val mSymbolView: TextView = mView.symbol
         val mNameView: TextView = mView.companyName
         val mPriceView: TextView = mView.price
+        val mChangeView: TextView = mView.change
 
         override fun toString(): String {
             return super.toString() + " '" + mSymbolView.text + "'"
