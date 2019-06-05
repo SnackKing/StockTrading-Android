@@ -7,8 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class HomeActivity : StockListFragment.OnListFragmentInteractionListener, AppCompatActivity() {
-     lateinit var auth: FirebaseAuth
+class HomeActivity : StockListFragment.OnListFragmentInteractionListener, WatchedFragment.OnListFragmentInteractionListener, AppCompatActivity() {
+
+    lateinit var auth: FirebaseAuth
      lateinit var database: DatabaseReference
 
 
