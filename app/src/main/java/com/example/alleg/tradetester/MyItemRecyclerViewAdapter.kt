@@ -17,13 +17,6 @@ import android.R.attr.data
 
 
 
-
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
- */
-
 class MyItemRecyclerViewAdapter(
         private val mValues: List<Stock>,
         private val mListener: OnListFragmentInteractionListener?)
