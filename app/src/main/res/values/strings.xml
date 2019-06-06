@@ -18,6 +18,9 @@
     <string name="error_field_required">This field is required</string>
     <string name="owned_header">Stocks you Own</string>
     <string name="watched_header">Stocks you are Watching</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Enter symbol here (ex: MSFT)</string>
+
 
 
     <string name="permission_rationale">"Contacts permissions are needed for providing email
