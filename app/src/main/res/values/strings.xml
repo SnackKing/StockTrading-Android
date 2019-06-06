@@ -22,7 +22,6 @@
     <string name="search_hint">Enter symbol here (ex: MSFT)</string>
 
 
-
     <string name="permission_rationale">"Contacts permissions are needed for providing email
 
         completions."
