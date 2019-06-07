@@ -21,7 +21,7 @@ object APIUtils{
                         var data: JSONArray = response.getJSONArray("data")
                         val stock: JSONObject = data.getJSONObject(0)
                         var stockIntent = Intent(context, StockActivity::class.java)
-                        stockIntent.putExtra("data", data.toString())
+                        stockIntent.putExtra("data", stock.toString())
                         stockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                         context.startActivity(stockIntent)
