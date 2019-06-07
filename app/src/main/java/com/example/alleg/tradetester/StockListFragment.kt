@@ -88,7 +88,7 @@ class StockListFragment : Fragment() {
                             symbolGroup.add(symString)
                             symString = ""
                         }
-                        var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f, numOwned = 1)
+                        var curStock = Stock(symbol = it.key, price = 10f, change = 0.1f, change_pct = 0.1f, numOwned = 1)
                         ownedList.add(curStock)
                         symString += it.key + ','
                         symbol_index[it.key] = localIndex
@@ -116,6 +116,7 @@ class StockListFragment : Fragment() {
                                    val stock:JSONObject = data.getJSONObject(i)
                                    ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
                                    ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
+                                   ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()
                                    index++
                                }
                                 ownedView.adapter.notifyDataSetChanged()
