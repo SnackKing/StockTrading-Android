@@ -28,7 +28,7 @@ object APIUtils{
 
                     } else {
                         var errorIntent = Intent(context, ErrorActivity::class.java)
-                        errorIntent.putExtra("code", 1)
+                        errorIntent.putExtra("code", ErrorActivity.ErrorCodes.NO_STOCK_FOUND)
                         errorIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(errorIntent)
                     }

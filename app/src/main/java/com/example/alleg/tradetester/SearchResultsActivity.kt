@@ -27,6 +27,7 @@ class SearchResultsActivity: Activity() {
             val query = intent.getStringExtra(SearchManager.QUERY)
             print(query)
             APIUtils.makeAPICallForSingleStock(query, this)
+            finish()
         }
     }
 

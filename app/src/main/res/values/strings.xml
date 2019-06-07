@@ -19,6 +19,8 @@
     <string name="owned_header">Stocks you Own</string>
     <string name="watched_header">Stocks you are Watching</string>
     <string name="search_title">Search</string>
+    <string name="error_placeholder">Something went wrong</string>
+    <string name="no_stock_message">No stocks found. Are you sure you entered a valid symbol?</string>
     <string name="search_hint">Enter symbol here (ex: MSFT)</string>
 
 
