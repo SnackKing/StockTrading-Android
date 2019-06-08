@@ -4,6 +4,7 @@ import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import org.json.JSONArray
 import org.json.JSONObject
 import com.github.mikephil.charting.data.Entry;
@@ -28,6 +29,7 @@ class StockActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
     lateinit var database: DatabaseReference
     val TAG = "STOCKPAGE"
+    var watchState = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,20 @@ class StockActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         setTextViews()
+        watch_btn.setOnClickListener(View.OnClickListener {
+            //user was not watching this stock before. Start watching now
+            if(watchState == 0){
+                database.child("users").child(auth.uid).child("added").child(sym).setValue("")
+                watch_btn.text = getString(R.string.stop_watch)
+                watchState = 1
+            }
+            //user was watching this stock before. Stop watching
+            else{
+                database.child("users").child(auth.uid).child("added").child(sym).removeValue()
+                watch_btn.text = getString(R.string.watch)
+                watchState = 0
+            }
+        })
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
@@ -76,6 +92,10 @@ class StockActivity : AppCompatActivity() {
                     equity.text = "Total Equity: " + equityVal
                     if (stock.numOwned != 0)currentReturn.text = "Return: " + (user.child("return").child(sym).getValue().toString()).toFloat() + equityVal
 
+                }
+                if(user.hasChild("added") && user.child("added").hasChild(sym)){
+                    watch_btn.text = getString(R.string.stop_watch)
+                    watchState = 1
                 }
             }
 
