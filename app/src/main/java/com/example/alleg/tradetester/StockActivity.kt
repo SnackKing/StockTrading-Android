@@ -70,6 +70,11 @@ class StockActivity : AppCompatActivity() {
         val userListener = object : ValueEventListener {
             override fun onDataChange(user: DataSnapshot) {
                 if(user.hasChild("owned") && user.child("owned").hasChild(sym)){
+                    stock.numOwned =  (user.child("owned").child(sym).value as String).toInt()
+                    numShares.text = "Shares Owned: "  + stock.numOwned
+                    val equityVal = (stock.numOwned * stock.price)
+                    equity.text = "Total Equity: " + equityVal
+                    if (stock.numOwned != 0)currentReturn.text = "Return: " + (user.child("return").child(sym).getValue().toString()).toFloat() + equityVal
 
                 }
             }
