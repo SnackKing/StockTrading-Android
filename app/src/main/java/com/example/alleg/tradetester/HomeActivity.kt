@@ -16,7 +16,7 @@ import android.widget.SearchView
 
 class HomeActivity : StockListFragment.OnListFragmentInteractionListener, WatchedFragment.OnListFragmentInteractionListener, AppCompatActivity() {
 
-    lateinit var auth: FirebaseAuth
+     lateinit var auth: FirebaseAuth
      lateinit var database: DatabaseReference
 
 
