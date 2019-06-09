@@ -19,6 +19,15 @@
     <string name="owned_header">Stocks you Own</string>
     <string name="watch">Watch</string>
     <string name="stop_watch">Stop Watching</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="dialogueTitle_buy">Buy Stock</string>
+    <string name="dialogueTitle_sell">Sell Stock</string>
+
+
+
     <string name="watched_header">Stocks you are Watching</string>
     <string name="search_title">Search</string>
     <string name="error_placeholder">Something went wrong</string>

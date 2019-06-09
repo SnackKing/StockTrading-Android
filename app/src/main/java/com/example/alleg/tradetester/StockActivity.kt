@@ -1,10 +1,17 @@
 package com.example.alleg.tradetester
 
+import android.app.AlertDialog
+import android.app.PendingIntent.getActivity
+import android.content.DialogInterface
 import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
+import android.widget.NumberPicker
+import android.widget.TextView
 import org.json.JSONArray
 import org.json.JSONObject
 import com.github.mikephil.charting.data.Entry;
@@ -28,8 +35,13 @@ class StockActivity : AppCompatActivity() {
     private lateinit var stock:Stock
     lateinit var auth: FirebaseAuth
     lateinit var database: DatabaseReference
+    var balance = 0f
     val TAG = "STOCKPAGE"
     var watchState = 0
+    enum class Action{
+        BUY,
+        SELL
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +66,11 @@ class StockActivity : AppCompatActivity() {
                 watchState = 0
             }
         })
+        buy.setOnClickListener(View.OnClickListener { createDialogue(Action.BUY) })
+        sell.setOnClickListener(View.OnClickListener { createDialogue(Action.SELL) })
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
-
-
-
 
     }
     fun setTextViews(){
@@ -85,8 +96,9 @@ class StockActivity : AppCompatActivity() {
         val userRef = database.child("users").child(uid)
         val userListener = object : ValueEventListener {
             override fun onDataChange(user: DataSnapshot) {
+                balance = (user.child("balance").value.toString()).toFloat()
                 if(user.hasChild("owned") && user.child("owned").hasChild(sym)){
-                    stock.numOwned =  (user.child("owned").child(sym).value as String).toInt()
+                    stock.numOwned =  (user.child("owned").child(sym).value.toString()).toInt()
                     numShares.text = "Shares Owned: "  + stock.numOwned
                     val equityVal = (stock.numOwned * stock.price)
                     equity.text = "Total Equity: " + equityVal
@@ -126,6 +138,48 @@ class StockActivity : AppCompatActivity() {
         desc.text = "Recent price history for" + sym
         chart.description = desc
         chart.invalidate()
+    }
+    private fun createDialogue(type:Action){
+        var numberPicker = NumberPicker(this);
+
+        var max:Int = 0
+        var title = ""
+        if(type == Action.BUY){
+            max = (balance/stock.price).toInt()
+            title = getString(R.string.dialogueTitle_buy)
+        }
+        else{
+            max = stock.numOwned
+            title = getString(R.string.dialogueTitle_sell)
+
+        }
+        numberPicker.setMaxValue(max);
+        numberPicker.setMinValue(1);
+            val builder = AlertDialog.Builder(this,R.style.AlertDialogCustom)
+            builder.apply {
+                setPositiveButton(R.string.confirm,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User clicked OK button
+                            val num = numberPicker.value
+                            val snackbar = Snackbar.make(root, "You bought " + num +" shares of " + sym , Snackbar.LENGTH_LONG)
+                            snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                            var textView =  snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+                            textView.setTextColor(resources.getColor(R.color.white));
+                            snackbar.show()
+
+                        })
+                setNegativeButton(R.string.cancel,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+            }
+            builder.setView(numberPicker)
+            builder.setTitle(title)
+
+            // Create the AlertDialog
+            builder.create().show()
+
+
     }
 
     inner class MyValueFormatter(val dates:ArrayList<String>) : IAxisValueFormatter {
