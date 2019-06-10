@@ -31,7 +31,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.lang.reflect.Field
 import java.text.DecimalFormat
-
+import java.util.Date;
+import java.sql.Timestamp;
 
 class StockActivity : AppCompatActivity() {
     private lateinit var sym:String
@@ -41,6 +42,9 @@ class StockActivity : AppCompatActivity() {
     var balance = 0f
     val TAG = "STOCKPAGE"
     var watchState = 0
+    var transCount = 0
+    var totalReturn = 0f
+    var curReturn = 0f
     enum class Action{
         BUY,
         SELL
@@ -106,11 +110,16 @@ class StockActivity : AppCompatActivity() {
                     val equityVal = (stock.numOwned * stock.price)
                     equity.text = "Total Equity: " + equityVal
                     if (stock.numOwned != 0)currentReturn.text = "Return: " + (user.child("return").child(sym).getValue().toString()).toFloat() + equityVal
-
+                    curReturn = user.child("return").child(sym).getValue().toString().toFloat()
                 }
                 if(user.hasChild("added") && user.child("added").hasChild(sym)){
                     watch_btn.text = getString(R.string.stop_watch)
                     watchState = 1
+                }
+                if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
+                    transCount = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
+                    totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
+
                 }
             }
 
@@ -120,7 +129,7 @@ class StockActivity : AppCompatActivity() {
                 // ...
             }
         }
-        userRef.addValueEventListener(userListener)
+        userRef.addListenerForSingleValueEvent(userListener)
     }
     fun setupLineChart(historyData:APIUtils.HistoryResponse){
 
@@ -165,6 +174,15 @@ class StockActivity : AppCompatActivity() {
                             // User clicked OK button
                             if(type == Action.BUY) {
                                 val num = numberPicker.value
+                                database.child("users").child(auth.uid).child("balance").setValue(balance - (num*stock.price))
+                                var ts = Timestamp(Date().time).toString()
+                                ts = ts.substring(0,ts.indexOf('.'))
+                                database.child("users").child(auth.uid).child("owned").child(sym).setValue(stock.numOwned + num)
+                                database.child("users").child(auth.uid).child("return").child(sym).setValue(curReturn - (num*stock.price))
+                                database.child("users").child(auth.uid).child("orders").child("buy").child(ts).setValue(Order(num, stock.price, stock.symbol))
+                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(transCount + num)
+                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(totalReturn - (num*stock.price))
+
                                 val snackbar = Snackbar.make(root, "You bought " + num + " shares of " + sym, Snackbar.LENGTH_LONG)
                                 snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
                                 var textView = snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView

@@ -12,8 +12,16 @@ data class Stock(var symbol:String, var name:String = "", var price:Float, var c
     var volume:String = ""
     var volume_avg:String = ""
 
-    constructor(data: JSONObject): this(data.getString("symbol"), data.getString("name"), data.get("price").toString().toFloat(), data.get("day_change").toString().toFloat(), data.get("change_pct").toString().toFloat())
+    constructor(data: JSONObject): this(data.getString("symbol"), data.getString("name"), data.get("price").toString().toFloat(), 0f, 0f)
     {
+        try{
+            change = data.get("day_change").toString().toFloat()
+            change_pct =data.get("change_pct").toString().toFloat()
+        }
+        catch(e:NumberFormatException){
+            change = 0f
+            change_pct = 0f
+        }
         high = data.get("day_high").toString().toFloat()
         low = data.get("day_high").toString().toFloat()
         yearHigh = data.get("52_week_high").toString().toFloat()

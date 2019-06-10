@@ -108,16 +108,23 @@ class StockListFragment : Fragment() {
                     var url = "https://www.worldtradingdata.com/api/v1/stock?"
                     url += "api_token=mkUwgwc7TADeShHuZO7D2RRbeLu1b9PNd6Ptey0LkIeRliCUjdLJJB9UE4UX"
                     url += "&symbol=" + it
+                    System.out.println(url)
                     val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                             Response.Listener { response ->
                                 var data:JSONArray = response.getJSONArray("data")
                                 print(data)
                                for(i in 0..data.length()-1){
                                    val stock:JSONObject = data.getJSONObject(i)
-                                   ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
                                    ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
-                                   ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()
-                                   index++
+                                   try {
+                                       ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
+                                       ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()
+                                   }
+                                   catch(e: NumberFormatException){
+                                       ownedList.get(symbol_index[stock.get("symbol")]!!).change = 0f
+                                       ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = 0f
+                                   }
+                                       index++
                                }
                                 ownedView.adapter.notifyDataSetChanged()
 
