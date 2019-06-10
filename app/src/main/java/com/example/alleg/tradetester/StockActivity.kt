@@ -3,6 +3,7 @@ package com.example.alleg.tradetester
 import android.app.AlertDialog
 import android.app.PendingIntent.getActivity
 import android.content.DialogInterface
+import android.graphics.Paint
 import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.TextView
 import org.json.JSONArray
@@ -27,6 +29,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.lang.reflect.Field
 import java.text.DecimalFormat
 
 
@@ -140,8 +143,7 @@ class StockActivity : AppCompatActivity() {
         chart.invalidate()
     }
     private fun createDialogue(type:Action){
-        var numberPicker = NumberPicker(this);
-
+        var numberPicker = NumberPicker(this)
         var max:Int = 0
         var title = ""
         if(type == Action.BUY){
@@ -155,17 +157,28 @@ class StockActivity : AppCompatActivity() {
         }
         numberPicker.setMaxValue(max);
         numberPicker.setMinValue(1);
+        setNumberPickerTextColor(numberPicker, R.color.black)
             val builder = AlertDialog.Builder(this,R.style.AlertDialogCustom)
             builder.apply {
                 setPositiveButton(R.string.confirm,
                         DialogInterface.OnClickListener { dialog, id ->
                             // User clicked OK button
-                            val num = numberPicker.value
-                            val snackbar = Snackbar.make(root, "You bought " + num +" shares of " + sym , Snackbar.LENGTH_LONG)
-                            snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                            var textView =  snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
-                            textView.setTextColor(resources.getColor(R.color.white));
-                            snackbar.show()
+                            if(type == Action.BUY) {
+                                val num = numberPicker.value
+                                val snackbar = Snackbar.make(root, "You bought " + num + " shares of " + sym, Snackbar.LENGTH_LONG)
+                                snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                                var textView = snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+                                textView.setTextColor(resources.getColor(R.color.white));
+                                snackbar.show()
+                            }
+                            else{
+                                val num = numberPicker.value
+                                val snackbar = Snackbar.make(root, "You sold " + num + " shares of " + sym, Snackbar.LENGTH_LONG)
+                                snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                                var textView = snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+                                textView.setTextColor(resources.getColor(R.color.white));
+                                snackbar.show()
+                            }
 
                         })
                 setNegativeButton(R.string.cancel,
@@ -181,6 +194,34 @@ class StockActivity : AppCompatActivity() {
 
 
     }
+    fun setNumberPickerTextColor(numberPicker: NumberPicker, color:Int)
+{
+
+    try{
+        var selectorWheelPaintField:Field = numberPicker.javaClass
+            .getDeclaredField("mSelectorWheelPaint");
+        selectorWheelPaintField.setAccessible(true);
+        (selectorWheelPaintField.get(numberPicker) as Paint).setColor(color);
+    }
+    catch(e: NoSuchFieldException ){
+        Log.w("setNumberPickerTextColor", e);
+    }
+    catch(e: IllegalAccessException){
+        Log.w("setNumberPickerTextColor", e);
+    }
+    catch(e: IllegalArgumentException ){
+        Log.w("setNumberPickerTextColor", e);
+    }
+
+    val count = numberPicker.getChildCount();
+    for(i in 0 until count){
+        var child:View = numberPicker.getChildAt(i);
+        if(child is EditText){
+            child.setTextColor(color)
+        }
+    }
+    numberPicker.invalidate();
+}
 
     inner class MyValueFormatter(val dates:ArrayList<String>) : IAxisValueFormatter {
         override fun getFormattedValue(value: Float, axis: AxisBase?): String {

@@ -23,8 +23,8 @@
     <string name="sell">Sell</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
-    <string name="dialogueTitle_buy">Buy Stock</string>
-    <string name="dialogueTitle_sell">Sell Stock</string>
+    <string name="dialogueTitle_buy">How many shares do you want to buy?</string>
+    <string name="dialogueTitle_sell">How many shares do you want to sell?</string>
 
 
 
