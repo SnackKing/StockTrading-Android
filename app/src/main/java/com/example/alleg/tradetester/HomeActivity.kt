@@ -19,7 +19,9 @@ class HomeActivity : StockListFragment.OnListFragmentInteractionListener, Watche
 
 
     override fun onListFragmentInteraction(item: Stock) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val name = item.symbol
+        APIUtils.makeAPICallForSingleStock(name,this)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

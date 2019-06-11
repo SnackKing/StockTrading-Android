@@ -20,7 +20,7 @@ class SearchResultsActivity: Activity() {
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             APIUtils.makeAPICallForSingleStock(query, this)
-            finish()
+            finish() //prevent search activity from going on back stack
         }
     }
 
