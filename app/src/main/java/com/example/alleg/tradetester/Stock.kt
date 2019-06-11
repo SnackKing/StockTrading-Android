@@ -11,6 +11,9 @@ data class Stock(var symbol:String, var name:String = "", var price:Float, var c
     var shares:String = ""
     var volume:String = ""
     var volume_avg:String = ""
+    var totalReturn = 0f
+    var numTransactions = 0
+    var curReturn  = 0f
 
     constructor(data: JSONObject): this(data.getString("symbol"), data.getString("name"), data.get("price").toString().toFloat(), 0f, 0f)
     {

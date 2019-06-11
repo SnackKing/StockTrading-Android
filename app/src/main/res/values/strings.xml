@@ -23,8 +23,11 @@
     <string name="sell">Sell</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="zero">0</string>
+    <string name="noHistory">Buy this stock to see more information</string>
     <string name="dialogueTitle_buy">How many shares do you want to buy?</string>
     <string name="dialogueTitle_sell">How many shares do you want to sell?</string>
+    <string name="symbol">Hello, %1$s! You have %2$d new messages.</string>
 
 
 

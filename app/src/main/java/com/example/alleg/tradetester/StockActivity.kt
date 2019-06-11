@@ -5,6 +5,7 @@ import android.app.PendingIntent.getActivity
 import android.content.DialogInterface
 import android.graphics.Paint
 import android.nfc.Tag
+import android.opengl.Visibility
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -42,9 +43,6 @@ class StockActivity : AppCompatActivity() {
     var balance = 0f
     val TAG = "STOCKPAGE"
     var watchState = 0
-    var transCount = 0
-    var totalReturn = 0f
-    var curReturn = 0f
     enum class Action{
         BUY,
         SELL
@@ -110,15 +108,22 @@ class StockActivity : AppCompatActivity() {
                     val equityVal = (stock.numOwned * stock.price)
                     equity.text = "Total Equity: " + equityVal
                     if (stock.numOwned != 0)currentReturn.text = "Return: " + (user.child("return").child(sym).getValue().toString()).toFloat() + equityVal
-                    curReturn = user.child("return").child(sym).getValue().toString().toFloat()
+                    stock.curReturn = user.child("return").child(sym).getValue().toString().toFloat()
+                    card_equity.visibility = View.VISIBLE
+                    notOwnedText.visibility = View.GONE
                 }
                 if(user.hasChild("added") && user.child("added").hasChild(sym)){
                     watch_btn.text = getString(R.string.stop_watch)
                     watchState = 1
                 }
                 if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
-                    transCount = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
-                    totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
+                    stock.numTransactions = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
+                    totalTransactions.text = "Total Transactions: " + stock.numTransactions.toString()
+
+                    stock.totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
+                    totalReturn.text = "Total Return: " + stock.totalReturn.toString()
+
+                    card_history.visibility = View.VISIBLE
 
                 }
             }
@@ -174,35 +179,51 @@ class StockActivity : AppCompatActivity() {
                             // User clicked OK button
                             if(type == Action.BUY) {
                                 val num = numberPicker.value
-                                database.child("users").child(auth.uid).child("balance").setValue(balance - (num*stock.price))
+                                balance -= num*stock.price
+                                database.child("users").child(auth.uid).child("balance").setValue(balance)
                                 var ts = Timestamp(Date().time).toString()
                                 ts = ts.substring(0,ts.indexOf('.'))
-                                database.child("users").child(auth.uid).child("owned").child(sym).setValue(stock.numOwned + num)
-                                database.child("users").child(auth.uid).child("return").child(sym).setValue(curReturn - (num*stock.price))
+                                stock.numOwned += num
+                                database.child("users").child(auth.uid).child("owned").child(sym).setValue(stock.numOwned)
+
+                                stock.curReturn -= (num*stock.price)
+                                database.child("users").child(auth.uid).child("return").child(sym).setValue(stock.curReturn)
+
                                 database.child("users").child(auth.uid).child("orders").child("buy").child(ts).setValue(Order(num, stock.price, stock.symbol))
-                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(transCount + num)
-                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(totalReturn - (num*stock.price))
+
+                                stock.numTransactions+= num
+                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(stock.numTransactions)
+
+                                stock.totalReturn -= (num*stock.price)
+                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(stock.totalReturn)
 
                                 val msg = "You bought " + num + " shares of " + sym
                                 SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                             }
                             else if(type == Action.SELL){
                                 val num = numberPicker.value
-
-                                database.child("users").child(auth.uid).child("balance").setValue(balance - (num*stock.price))
+                                balance += num*stock.price
+                                database.child("users").child(auth.uid).child("balance").setValue(balance)
                                 var ts = Timestamp(Date().time).toString()
                                 ts = ts.substring(0,ts.indexOf('.'))
                                 stock.numOwned = stock.numOwned - num
                                 database.child("users").child(auth.uid).child("owned").child(sym).setValue(stock.numOwned)
                                 //all shares sold, remove relevant info from database
                                 if(stock.numOwned == 0){
-                                    database.child("user").child(auth.uid).child("owned").child(sym).removeValue()
-                                    database.child("user").child(auth.uid).child("return").child(sym).removeValue()
+                                    database.child("users").child(auth.uid).child("owned").child(sym).removeValue()
+                                    database.child("users").child(auth.uid).child("return").child(sym).removeValue()
                                 }
-                                database.child("users").child(auth.uid).child("return").child(sym).setValue(curReturn + (num*stock.price))
+
+                                stock.curReturn += (num*stock.price)
+                                database.child("users").child(auth.uid).child("return").child(sym).setValue(stock.curReturn)
+
                                 database.child("users").child(auth.uid).child("orders").child("sell").child(ts).setValue(Order(num, stock.price, stock.symbol))
-                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(transCount + num)
-                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(totalReturn + (num*stock.price))
+
+                                stock.numTransactions += num
+                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(stock.numTransactions)
+
+                                stock.totalReturn += num*stock.price
+                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(stock.totalReturn)
                                 val msg = "You sold " + num + " shares of " + sym
                                 SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                             }
