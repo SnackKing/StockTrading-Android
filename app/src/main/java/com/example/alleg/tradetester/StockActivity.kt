@@ -83,8 +83,8 @@ class StockActivity : AppCompatActivity() {
     fun setTextViews(){
         symbol.text = stock.name + " (" + stock.symbol + ")"
         price.text = stock.price.toString() + " USD"
-        change.text = "Today's Change: " +  stock.change.toString() + "USD"
-        change_pct.text = "Change in %: " + stock.change_pct.toString() + "USD"
+        change.text = "Today's Change: " +  stock.change.toString() + " USD"
+        change_pct.text = "Change in %: " + stock.change_pct.toString() + " USD"
         todayHigh.text = "Today's High: " + stock.high
         todayLow.text = "Today's Low: " + stock.low
         yearHigh.text = "52 Week High: " + stock.yearHigh
@@ -183,19 +183,28 @@ class StockActivity : AppCompatActivity() {
                                 database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(transCount + num)
                                 database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(totalReturn - (num*stock.price))
 
-                                val snackbar = Snackbar.make(root, "You bought " + num + " shares of " + sym, Snackbar.LENGTH_LONG)
-                                snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                                var textView = snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
-                                textView.setTextColor(resources.getColor(R.color.white));
-                                snackbar.show()
+                                val msg = "You bought " + num + " shares of " + sym
+                                SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                             }
-                            else{
+                            else if(type == Action.SELL){
                                 val num = numberPicker.value
-                                val snackbar = Snackbar.make(root, "You sold " + num + " shares of " + sym, Snackbar.LENGTH_LONG)
-                                snackbar.view.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                                var textView = snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView
-                                textView.setTextColor(resources.getColor(R.color.white));
-                                snackbar.show()
+
+                                database.child("users").child(auth.uid).child("balance").setValue(balance - (num*stock.price))
+                                var ts = Timestamp(Date().time).toString()
+                                ts = ts.substring(0,ts.indexOf('.'))
+                                stock.numOwned = stock.numOwned - num
+                                database.child("users").child(auth.uid).child("owned").child(sym).setValue(stock.numOwned)
+                                //all shares sold, remove relevant info from database
+                                if(stock.numOwned == 0){
+                                    database.child("user").child(auth.uid).child("owned").child(sym).removeValue()
+                                    database.child("user").child(auth.uid).child("return").child(sym).removeValue()
+                                }
+                                database.child("users").child(auth.uid).child("return").child(sym).setValue(curReturn + (num*stock.price))
+                                database.child("users").child(auth.uid).child("orders").child("sell").child(ts).setValue(Order(num, stock.price, stock.symbol))
+                                database.child("users").child(auth.uid).child("stats").child("transCount").child(sym).setValue(transCount + num)
+                                database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(totalReturn + (num*stock.price))
+                                val msg = "You sold " + num + " shares of " + sym
+                                SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                             }
 
                         })
