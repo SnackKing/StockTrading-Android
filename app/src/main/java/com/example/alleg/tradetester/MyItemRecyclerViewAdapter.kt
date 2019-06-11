@@ -1,20 +1,14 @@
 package com.example.alleg.tradetester
 
+
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-
 import com.example.alleg.tradetester.StockListFragment.OnListFragmentInteractionListener
-import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
-
 import kotlinx.android.synthetic.main.fragment_item.view.*
-import com.example.alleg.tradetester.MyItemRecyclerViewAdapter.VHHeader
 import kotlinx.android.synthetic.main.owned_header.view.*
-import android.R.attr.data
-
 
 
 class MyItemRecyclerViewAdapter(

@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.design.widget.Snackbar
 import android.view.View
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_stock.*
 
 object SnackBarMaker {
 

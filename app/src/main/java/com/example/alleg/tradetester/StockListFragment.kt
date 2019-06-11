@@ -3,30 +3,21 @@ package com.example.alleg.tradetester
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.example.alleg.tradetester.dummy.DummyContent
-import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import android.support.v7.widget.DefaultItemAnimator
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import kotlinx.android.synthetic.main.fragment_item.*
-import kotlinx.android.synthetic.main.fragment_item_list.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import org.json.JSONArray
 import org.json.JSONObject
-import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader
-
-
 
 
 /**

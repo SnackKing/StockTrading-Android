@@ -3,24 +3,19 @@ package com.example.alleg.tradetester
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.example.alleg.tradetester.dummy.DummyContent
-import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import android.support.v7.widget.DefaultItemAnimator
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import kotlinx.android.synthetic.main.fragment_item.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -109,10 +104,16 @@ class WatchedFragment : Fragment() {
                                 print(data)
                                 for(i in 0..data.length()-1){
                                     val stock:JSONObject = data.getJSONObject(i)
-                                    ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
-                                    ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()
                                     ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
                                     ownedList.get(symbol_index[stock.get("symbol")]!!).name = stock.get("name").toString()
+                                    try {
+                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
+                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()
+                                    }
+                                    catch (e:NumberFormatException){
+                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change = 0f
+                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = 0f
+                                    }
 
                                     index++
                                 }

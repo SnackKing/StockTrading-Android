@@ -2,16 +2,13 @@ package com.example.alleg.tradetester
 
 import android.app.SearchManager
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import com.example.alleg.tradetester.dummy.DummyContent
+import android.widget.SearchView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import android.view.MenuInflater
-import android.support.v4.view.MenuItemCompat.getActionView
-import android.widget.SearchView
 
 
 class HomeActivity : StockListFragment.OnListFragmentInteractionListener, WatchedFragment.OnListFragmentInteractionListener, AppCompatActivity() {

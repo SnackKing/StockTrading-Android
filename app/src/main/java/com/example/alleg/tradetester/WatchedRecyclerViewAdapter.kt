@@ -1,16 +1,13 @@
 package com.example.alleg.tradetester
 
+
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-
 import com.example.alleg.tradetester.WatchedFragment.OnListFragmentInteractionListener
-import com.example.alleg.tradetester.dummy.DummyContent.DummyItem
 import kotlinx.android.synthetic.main.owned_header.view.*
-
 import kotlinx.android.synthetic.main.watched_item.view.*
 
 

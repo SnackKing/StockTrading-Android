@@ -27,7 +27,35 @@
     <string name="noHistory">Buy this stock to see more information</string>
     <string name="dialogueTitle_buy">How many shares do you want to buy?</string>
     <string name="dialogueTitle_sell">How many shares do you want to sell?</string>
-    <string name="symbol">Hello, %1$s! You have %2$d new messages.</string>
+    <string name="symbol">%1$s (%2$s)</string>
+    <string name="price">%1$s USD</string>
+    <string name="change_price">Today\'s Change: %1$s USD</string>
+    <string name="change_pct">Percent Change: %1$s %%</string>
+    <string name="today_high">Today\'s high: %1$s USD</string>
+    <string name="today_low">Today\'s low: %1$s USD</string>
+    <string name="year_high">52 week high: %1$s USD</string>
+    <string name="year_low">52 week low: %1$s USD</string>
+    <string name="market_cap">Market cap: %1$s </string>
+    <string name="shares">Shares: %1$s </string>
+    <string name="volume">Volume: %1$s </string>
+    <string name="volume_avg">Volume Average: %1$s </string>
+    <string name="shares_owned">Shares Owned: %1$s </string>
+    <string name="equity">Total Equity: %1$f </string>
+    <string name="curReturn">Return: %1$f </string>
+    <string name="numTrans">Total Transactions: %1$s </string>
+    <string name="totalReturn">Total Return: %1$s </string>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

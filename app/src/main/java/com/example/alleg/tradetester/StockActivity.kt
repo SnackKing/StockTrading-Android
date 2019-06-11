@@ -1,47 +1,37 @@
 package com.example.alleg.tradetester
 
 import android.app.AlertDialog
-import android.app.PendingIntent.getActivity
 import android.content.DialogInterface
 import android.graphics.Paint
-import android.nfc.Tag
-import android.opengl.Visibility
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.NumberPicker
-import android.widget.TextView
-import org.json.JSONArray
-import org.json.JSONObject
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData
-import kotlinx.android.synthetic.main.activity_stock.*
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IValueFormatter
-import com.github.mikephil.charting.utils.ViewPortHandler
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_stock.*
+import org.json.JSONObject
 import java.lang.reflect.Field
-import java.text.DecimalFormat
-import java.util.Date;
-import java.sql.Timestamp;
+import java.sql.Timestamp
+import java.util.Date
+import kotlin.collections.ArrayList
 
 class StockActivity : AppCompatActivity() {
     private lateinit var sym:String
     private lateinit var stock:Stock
-    lateinit var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     lateinit var database: DatabaseReference
     var balance = 0f
-    val TAG = "STOCKPAGE"
     var watchState = 0
     enum class Action{
         BUY,
@@ -57,7 +47,7 @@ class StockActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         setTextViews()
-        watch_btn.setOnClickListener(View.OnClickListener {
+        watch_btn.setOnClickListener {
             //user was not watching this stock before. Start watching now
             if(watchState == 0){
                 database.child("users").child(auth.uid).child("added").child(sym).setValue("")
@@ -70,27 +60,27 @@ class StockActivity : AppCompatActivity() {
                 watch_btn.text = getString(R.string.watch)
                 watchState = 0
             }
-        })
-        buy.setOnClickListener(View.OnClickListener { createDialogue(Action.BUY) })
-        sell.setOnClickListener(View.OnClickListener { createDialogue(Action.SELL) })
+        }
+        buy.setOnClickListener { createDialogue(Action.BUY) }
+        sell.setOnClickListener { createDialogue(Action.SELL) }
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
 
     }
     fun setTextViews(){
-        symbol.text = stock.name + " (" + stock.symbol + ")"
-        price.text = stock.price.toString() + " USD"
-        change.text = "Today's Change: " +  stock.change.toString() + " USD"
-        change_pct.text = "Change in %: " + stock.change_pct.toString() + " USD"
-        todayHigh.text = "Today's High: " + stock.high
-        todayLow.text = "Today's Low: " + stock.low
-        yearHigh.text = "52 Week High: " + stock.yearHigh
-        yearLow.text = "52 Week Low: " + stock.yearLow
-        marketCap.text = "Market Cap: " + stock.market_cap
-        shares.text = "Shares: " + stock.shares
-        volume.text = "Volume: " + stock.volume
-        volume_avg.text = "Volume Average: " + stock.volume_avg
+        symbol.text =  String.format(resources.getString(R.string.symbol), stock.name, stock.symbol)
+        price.text = String.format(resources.getString(R.string.price), stock.price.toString())
+        change.text =  String.format(resources.getString(R.string.change_price), stock.change.toString())
+        change_pct.text = String.format(resources.getString(R.string.change_pct), stock.change_pct.toString())
+        todayHigh.text = String.format(resources.getString(R.string.today_high), stock.high.toString())
+        todayLow.text =  String.format(resources.getString(R.string.today_low), stock.low.toString())
+        yearHigh.text =  String.format(resources.getString(R.string.year_high), stock.yearHigh.toString())
+        yearLow.text =  String.format(resources.getString(R.string.year_low), stock.yearLow.toString())
+        marketCap.text = String.format(resources.getString(R.string.market_cap), stock.market_cap)
+        shares.text =  String.format(resources.getString(R.string.shares), stock.shares)
+        volume.text =  String.format(resources.getString(R.string.volume), stock.volume)
+        volume_avg.text =  String.format(resources.getString(R.string.volume_avg), stock.volume_avg)
 
         getUserStockData()
 
@@ -104,10 +94,10 @@ class StockActivity : AppCompatActivity() {
                 balance = (user.child("balance").value.toString()).toFloat()
                 if(user.hasChild("owned") && user.child("owned").hasChild(sym)){
                     stock.numOwned =  (user.child("owned").child(sym).value.toString()).toInt()
-                    numShares.text = "Shares Owned: "  + stock.numOwned
+                    numShares.text = String.format(resources.getString(R.string.shares_owned), stock.numOwned.toString())
                     val equityVal = (stock.numOwned * stock.price)
-                    equity.text = "Total Equity: " + equityVal
-                    if (stock.numOwned != 0)currentReturn.text = "Return: " + (user.child("return").child(sym).getValue().toString()).toFloat() + equityVal
+                    equity.text = String.format(resources.getString(R.string.equity), equityVal)
+                    if (stock.numOwned != 0)currentReturn.text = String.format(resources.getString(R.string.curReturn),user.child("return").child(sym).getValue().toString().toFloat() + equityVal)
                     stock.curReturn = user.child("return").child(sym).getValue().toString().toFloat()
                     card_equity.visibility = View.VISIBLE
                     notOwnedText.visibility = View.GONE
@@ -118,10 +108,10 @@ class StockActivity : AppCompatActivity() {
                 }
                 if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
                     stock.numTransactions = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
-                    totalTransactions.text = "Total Transactions: " + stock.numTransactions.toString()
+                    totalTransactions.text =  String.format(resources.getString(R.string.numTrans), stock.numTransactions.toString())
 
                     stock.totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
-                    totalReturn.text = "Total Return: " + stock.totalReturn.toString()
+                    totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
 
                     card_history.visibility = View.VISIBLE
 
@@ -130,7 +120,7 @@ class StockActivity : AppCompatActivity() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting user failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.w("STOCK", "loadPost:onCancelled", databaseError.toException())
                 // ...
             }
         }
@@ -150,9 +140,9 @@ class StockActivity : AppCompatActivity() {
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.axisRight.isEnabled = false
         chart.setDrawGridBackground(false)
-        chart.setAutoScaleMinMaxEnabled(true)
+        chart.isAutoScaleMinMaxEnabled = true
         val desc = Description()
-        desc.text = "Recent price history for" + sym
+        desc.text = "Recent price history for $sym"
         chart.description = desc
         chart.invalidate()
     }
@@ -224,7 +214,7 @@ class StockActivity : AppCompatActivity() {
 
                                 stock.totalReturn += num*stock.price
                                 database.child("users").child(auth.uid).child("stats").child("totalreturn").child(sym).setValue(stock.totalReturn)
-                                val msg = "You sold " + num + " shares of " + sym
+                                val msg = "You sold $num shares of $sym"
                                 SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                             }
 
@@ -246,32 +236,30 @@ class StockActivity : AppCompatActivity() {
 {
 
     try{
-        var selectorWheelPaintField:Field = numberPicker.javaClass
+        val selectorWheelPaintField:Field = numberPicker.javaClass
             .getDeclaredField("mSelectorWheelPaint");
         selectorWheelPaintField.setAccessible(true);
-        (selectorWheelPaintField.get(numberPicker) as Paint).setColor(color);
+        (selectorWheelPaintField.get(numberPicker) as Paint).setColor(color)
     }
     catch(e: NoSuchFieldException ){
-        Log.w("setNumberPickerTextColor", e);
+        Log.w("setNumberPickerTextColor", e)
     }
     catch(e: IllegalAccessException){
-        Log.w("setNumberPickerTextColor", e);
+        Log.w("setNumberPickerTextColor", e)
     }
     catch(e: IllegalArgumentException ){
-        Log.w("setNumberPickerTextColor", e);
+        Log.w("setNumberPickerTextColor", e)
     }
 
-    val count = numberPicker.getChildCount();
+    val count = numberPicker.childCount
     for(i in 0 until count){
-        var child:View = numberPicker.getChildAt(i);
-        if(child is EditText){
-            child.setTextColor(color)
-        }
+        val child:View = numberPicker.getChildAt(i)
+        (child as? EditText)?.setTextColor(color)
     }
-    numberPicker.invalidate();
+    numberPicker.invalidate()
 }
 
-    inner class MyValueFormatter(val dates:ArrayList<String>) : IAxisValueFormatter {
+    inner class MyValueFormatter(private val dates:ArrayList<String>) : IAxisValueFormatter {
         override fun getFormattedValue(value: Float, axis: AxisBase?): String {
             return dates[value.toInt()]
         }
