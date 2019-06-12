@@ -107,6 +107,8 @@ class StockListFragment : Fragment() {
                                for(i in 0..data.length()-1){
                                    val stock:JSONObject = data.getJSONObject(i)
                                    ownedList.get(symbol_index[stock.get("symbol")]!!).price = stock.get("price").toString().toFloat()
+                                   ownedList.get(symbol_index[stock.get("symbol")]!!).name = stock.get("name").toString()
+
                                    try {
                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change = stock.get("day_change").toString().toFloat()
                                        ownedList.get(symbol_index[stock.get("symbol")]!!).change_pct = stock.get("change_pct").toString().toFloat()

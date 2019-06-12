@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.example.alleg.tradetester.WatchedFragment.OnListFragmentInteractionListener
 import kotlinx.android.synthetic.main.owned_header.view.*
 import kotlinx.android.synthetic.main.watched_item.view.*
+import java.security.AccessController.getContext
 
 
 class WatchedRecyclerViewAdapter(
@@ -52,6 +53,7 @@ class WatchedRecyclerViewAdapter(
             holder.mSymbolView.text = item.symbol
             holder.mNameView.text = item.name
             holder.mPriceView.text = (item.price).toString()
+            holder.mChangeView.text = String.format(holder.itemView.context.getString(R.string.bothChanges), item.change.toString(), item.change_pct.toString())
 
             with(holder.itemView) {
                 tag = item
@@ -82,6 +84,7 @@ class WatchedRecyclerViewAdapter(
         val mSymbolView: TextView = mView.symbol
         val mNameView: TextView = mView.companyName
         val mPriceView: TextView = mView.price
+        val mChangeView:TextView = mView.change
 
     }
 
@@ -89,14 +92,5 @@ class WatchedRecyclerViewAdapter(
         var textview: TextView = itemView.owned_header
     }
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mSymbolView: TextView = mView.symbol
-        val mNameView: TextView = mView.companyName
-        val mPriceView: TextView = mView.price
-        val mChangeView: TextView = mView.change
 
-        override fun toString(): String {
-            return super.toString() + " '" + mSymbolView.text + "'"
-        }
-    }
 }

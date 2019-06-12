@@ -44,6 +44,8 @@
     <string name="curReturn">Return: %1$f </string>
     <string name="numTrans">Total Transactions: %1$s </string>
     <string name="totalReturn">Total Return: %1$s </string>
+    <string name="bothChanges">%1$s (%2$s%%) </string>
+
 
 
 
