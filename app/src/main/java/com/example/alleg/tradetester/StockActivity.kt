@@ -85,6 +85,19 @@ class StockActivity : AppCompatActivity() {
         getUserStockData()
 
     }
+    fun setOwnedTextViews(){
+        numShares.text = String.format(resources.getString(R.string.shares_owned), stock.numOwned.toString())
+        val equityVal = (stock.numOwned * stock.price)
+        equity.text = String.format(resources.getString(R.string.equity), equityVal)
+        currentReturn.text = String.format(resources.getString(R.string.curReturn), stock.curReturn + equityVal)
+        card_equity.visibility = View.VISIBLE
+        notOwnedText.visibility = View.GONE
+    }
+    fun setHistoryTextViews(){
+        totalTransactions.text =  String.format(resources.getString(R.string.numTrans), stock.numTransactions.toString())
+        totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
+        card_history.visibility = View.VISIBLE
+    }
 
     fun getUserStockData(){
         val uid = auth.uid
@@ -94,13 +107,9 @@ class StockActivity : AppCompatActivity() {
                 balance = (user.child("balance").value.toString()).toFloat()
                 if(user.hasChild("owned") && user.child("owned").hasChild(sym)){
                     stock.numOwned =  (user.child("owned").child(sym).value.toString()).toInt()
-                    numShares.text = String.format(resources.getString(R.string.shares_owned), stock.numOwned.toString())
-                    val equityVal = (stock.numOwned * stock.price)
-                    equity.text = String.format(resources.getString(R.string.equity), equityVal)
-                    if (stock.numOwned != 0)currentReturn.text = String.format(resources.getString(R.string.curReturn),user.child("return").child(sym).getValue().toString().toFloat() + equityVal)
                     stock.curReturn = user.child("return").child(sym).getValue().toString().toFloat()
-                    card_equity.visibility = View.VISIBLE
-                    notOwnedText.visibility = View.GONE
+                    setOwnedTextViews()
+
                 }
                 if(user.hasChild("added") && user.child("added").hasChild(sym)){
                     watch_btn.text = getString(R.string.stop_watch)
@@ -108,13 +117,8 @@ class StockActivity : AppCompatActivity() {
                 }
                 if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
                     stock.numTransactions = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
-                    totalTransactions.text =  String.format(resources.getString(R.string.numTrans), stock.numTransactions.toString())
-
                     stock.totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
-                    totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
-
-                    card_history.visibility = View.VISIBLE
-
+                    setHistoryTextViews()
                 }
             }
 
@@ -189,6 +193,8 @@ class StockActivity : AppCompatActivity() {
 
                                 val msg = "You bought " + num + " shares of " + sym
                                 SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
+                                setOwnedTextViews()
+                                setHistoryTextViews()
                             }
                             else if(type == Action.SELL){
                                 val num = numberPicker.value
@@ -202,7 +208,12 @@ class StockActivity : AppCompatActivity() {
                                 if(stock.numOwned == 0){
                                     database.child("users").child(auth.uid).child("owned").child(sym).removeValue()
                                     database.child("users").child(auth.uid).child("return").child(sym).removeValue()
+                                    card_equity.visibility = View.GONE
                                 }
+                                else{
+                                    setOwnedTextViews()
+                                }
+                                setHistoryTextViews()
 
                                 stock.curReturn += (num*stock.price)
                                 database.child("users").child(auth.uid).child("return").child(sym).setValue(stock.curReturn)
