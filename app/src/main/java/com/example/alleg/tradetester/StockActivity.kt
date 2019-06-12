@@ -2,12 +2,14 @@ package com.example.alleg.tradetester
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.NumberPicker
 import com.github.mikephil.charting.components.AxisBase
@@ -98,6 +100,28 @@ class StockActivity : AppCompatActivity() {
         totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
         card_history.visibility = View.VISIBLE
     }
+    fun enableOrDisableButtons(){
+        if(balance >= stock.price){
+            enable(buy)
+        }
+        else{
+            disable(buy)
+        }
+        if(stock.numOwned == 0){
+            disable(sell)
+        }
+        else{
+            enable(sell)
+        }
+    }
+    private fun enable(button: Button){
+        button.isEnabled = true
+        button.setBackgroundColor(getColor(R.color.colorPrimary))
+    }
+    private fun disable(button:Button){
+        button.isEnabled = false
+        button.setBackgroundColor(Color.parseColor("#D3D3D3"))
+    }
 
     fun getUserStockData(){
         val uid = auth.uid
@@ -107,7 +131,7 @@ class StockActivity : AppCompatActivity() {
                 balance = (user.child("balance").value.toString()).toFloat()
                 if(user.hasChild("owned") && user.child("owned").hasChild(sym)){
                     stock.numOwned =  (user.child("owned").child(sym).value.toString()).toInt()
-                    stock.curReturn = user.child("return").child(sym).getValue().toString().toFloat()
+                    stock.curReturn = user.child("return").child(sym).value.toString().toFloat()
                     setOwnedTextViews()
 
                 }
@@ -116,10 +140,12 @@ class StockActivity : AppCompatActivity() {
                     watchState = 1
                 }
                 if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
-                    stock.numTransactions = user.child("stats").child("transCount").child(sym).getValue().toString().toInt()
-                    stock.totalReturn = user.child("stats").child("totalreturn").child(sym).getValue().toString().toFloat()
+                    stock.numTransactions = user.child("stats").child("transCount").child(sym).value.toString().toInt()
+                    stock.totalReturn = user.child("stats").child("totalreturn").child(sym).value.toString().toFloat()
                     setHistoryTextViews()
                 }
+                enableOrDisableButtons()
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -137,10 +163,10 @@ class StockActivity : AppCompatActivity() {
             entries.add(Entry(i.toFloat(),historyData.prices[i]))
         }
         val linedata:LineDataSet = LineDataSet(entries, "Price")
-        linedata.setColor(R.color.colorPrimary)
-        chart.setData(LineData(linedata))
+        linedata.color = R.color.colorPrimary
+        chart.data = LineData(linedata)
         chart.xAxis.granularity = 1f
-        chart.xAxis.setValueFormatter(MyValueFormatter(historyData.labels))
+        chart.xAxis.valueFormatter = MyValueFormatter(historyData.labels)
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.axisRight.isEnabled = false
         chart.setDrawGridBackground(false)
@@ -163,8 +189,8 @@ class StockActivity : AppCompatActivity() {
             title = getString(R.string.dialogueTitle_sell)
 
         }
-        numberPicker.setMaxValue(max);
-        numberPicker.setMinValue(1);
+        numberPicker.maxValue = max
+        numberPicker.minValue = 1
         setNumberPickerTextColor(numberPicker, R.color.black)
             val builder = AlertDialog.Builder(this,R.style.AlertDialogCustom)
             builder.apply {
@@ -195,6 +221,7 @@ class StockActivity : AppCompatActivity() {
                                 SnackBarMaker.makeSnackBar(context, root, msg, Snackbar.LENGTH_LONG).show()
                                 setOwnedTextViews()
                                 setHistoryTextViews()
+                                enableOrDisableButtons()
                             }
                             else if(type == Action.SELL){
                                 val num = numberPicker.value
@@ -214,6 +241,7 @@ class StockActivity : AppCompatActivity() {
                                     setOwnedTextViews()
                                 }
                                 setHistoryTextViews()
+                                enableOrDisableButtons()
 
                                 stock.curReturn += (num*stock.price)
                                 database.child("users").child(auth.uid).child("return").child(sym).setValue(stock.curReturn)
@@ -248,9 +276,9 @@ class StockActivity : AppCompatActivity() {
 
     try{
         val selectorWheelPaintField:Field = numberPicker.javaClass
-            .getDeclaredField("mSelectorWheelPaint");
-        selectorWheelPaintField.setAccessible(true);
-        (selectorWheelPaintField.get(numberPicker) as Paint).setColor(color)
+            .getDeclaredField("mSelectorWheelPaint")
+        selectorWheelPaintField.isAccessible = true
+        (selectorWheelPaintField.get(numberPicker) as Paint).color = color
     }
     catch(e: NoSuchFieldException ){
         Log.w("setNumberPickerTextColor", e)
