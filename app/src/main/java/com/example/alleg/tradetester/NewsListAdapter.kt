@@ -24,7 +24,7 @@ class NewsListAdapter(private val context: Context, private val items:ArrayList<
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rowView = inflater.inflate(R.layout.news_item, parent, false)
-        val curItem = items[position]
+        val curItem: NewsItem = getItem(position) as NewsItem
         rowView.title.text = curItem.title
         return rowView
     }

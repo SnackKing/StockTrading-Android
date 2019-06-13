@@ -185,10 +185,12 @@ class StockActivity : AppCompatActivity() {
         val adapter = NewsListAdapter(this, newsList)
         news_items.adapter = adapter
          news_items.setOnItemClickListener { _, _, position, _ ->
-             val selectedArticle = newsList[position]
-             val intent = Intent(this, WebView::class.java)
-             intent.putExtra("url", selectedArticle.url)
-             startActivity(intent)
+             if(position != 0) {
+                 val selectedArticle = newsList[position-1]
+                 val intent = Intent(this, WebView::class.java)
+                 intent.putExtra("url", selectedArticle.url)
+                 startActivity(intent)
+             }
          }
     }
 
