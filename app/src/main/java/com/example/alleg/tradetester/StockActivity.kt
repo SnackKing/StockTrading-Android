@@ -2,6 +2,7 @@ package com.example.alleg.tradetester
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -9,9 +10,8 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.NumberPicker
+import android.view.ViewGroup
+import android.widget.*
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
@@ -22,6 +22,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_stock.*
+import kotlinx.android.synthetic.main.stock_content.view.*
 import org.json.JSONObject
 import java.lang.reflect.Field
 import java.sql.Timestamp
@@ -29,6 +30,7 @@ import java.util.Date
 import kotlin.collections.ArrayList
 
 class StockActivity : AppCompatActivity() {
+    lateinit var header:View
     private lateinit var sym:String
     private lateinit var stock:Stock
     private lateinit var auth: FirebaseAuth
@@ -43,28 +45,30 @@ class StockActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock)
+        header = layoutInflater.inflate(R.layout.stock_content,null)
+        news_items.addHeaderView(header)
         val mJsonObject = JSONObject(intent.getStringExtra("data"))
         stock = Stock(mJsonObject)
         sym = stock.symbol
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         setTextViews()
-        watch_btn.setOnClickListener {
+        header.watch_btn.setOnClickListener {
             //user was not watching this stock before. Start watching now
             if(watchState == 0){
                 database.child("users").child(auth.uid).child("added").child(sym).setValue("")
-                watch_btn.text = getString(R.string.stop_watch)
+                header.watch_btn.text = getString(R.string.stop_watch)
                 watchState = 1
             }
             //user was watching this stock before. Stop watching
             else{
                 database.child("users").child(auth.uid).child("added").child(sym).removeValue()
-                watch_btn.text = getString(R.string.watch)
+                header.watch_btn.text = getString(R.string.watch)
                 watchState = 0
             }
         }
-        buy.setOnClickListener { createDialogue(Action.BUY) }
-        sell.setOnClickListener { createDialogue(Action.SELL) }
+        header.buy.setOnClickListener { createDialogue(Action.BUY) }
+        header.sell.setOnClickListener { createDialogue(Action.SELL) }
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
@@ -72,47 +76,47 @@ class StockActivity : AppCompatActivity() {
 
     }
     fun setTextViews(){
-        symbol.text =  String.format(resources.getString(R.string.symbol), stock.name, stock.symbol)
-        price.text = String.format(resources.getString(R.string.price), stock.price.toString())
-        change.text =  String.format(resources.getString(R.string.change_price), stock.change.toString())
-        change_pct.text = String.format(resources.getString(R.string.change_pct), stock.change_pct.toString())
-        todayHigh.text = String.format(resources.getString(R.string.today_high), stock.high.toString())
-        todayLow.text =  String.format(resources.getString(R.string.today_low), stock.low.toString())
-        yearHigh.text =  String.format(resources.getString(R.string.year_high), stock.yearHigh.toString())
-        yearLow.text =  String.format(resources.getString(R.string.year_low), stock.yearLow.toString())
-        marketCap.text = String.format(resources.getString(R.string.market_cap), stock.market_cap)
-        shares.text =  String.format(resources.getString(R.string.shares), stock.shares)
-        volume.text =  String.format(resources.getString(R.string.volume), stock.volume)
-        volume_avg.text =  String.format(resources.getString(R.string.volume_avg), stock.volume_avg)
+        header.symbol.text =  String.format(resources.getString(R.string.symbol), stock.name, stock.symbol)
+        header.price.text = String.format(resources.getString(R.string.price), stock.price.toString())
+        header.change.text =  String.format(resources.getString(R.string.change_price), stock.change.toString())
+        header. change_pct.text = String.format(resources.getString(R.string.change_pct), stock.change_pct.toString())
+        header.todayHigh.text = String.format(resources.getString(R.string.today_high), stock.high.toString())
+        header. todayLow.text =  String.format(resources.getString(R.string.today_low), stock.low.toString())
+        header. yearHigh.text =  String.format(resources.getString(R.string.year_high), stock.yearHigh.toString())
+        header.  yearLow.text =  String.format(resources.getString(R.string.year_low), stock.yearLow.toString())
+        header. marketCap.text = String.format(resources.getString(R.string.market_cap), stock.market_cap)
+        header. shares.text =  String.format(resources.getString(R.string.shares), stock.shares)
+        header.  volume.text =  String.format(resources.getString(R.string.volume), stock.volume)
+        header.  volume_avg.text =  String.format(resources.getString(R.string.volume_avg), stock.volume_avg)
 
         getUserStockData()
 
     }
     fun setOwnedTextViews(){
-        numShares.text = String.format(resources.getString(R.string.shares_owned), stock.numOwned.toString())
+        header. numShares.text = String.format(resources.getString(R.string.shares_owned), stock.numOwned.toString())
         val equityVal = (stock.numOwned * stock.price)
-        equity.text = String.format(resources.getString(R.string.equity), equityVal)
-        currentReturn.text = String.format(resources.getString(R.string.curReturn), stock.curReturn + equityVal)
-        card_equity.visibility = View.VISIBLE
-        notOwnedText.visibility = View.GONE
+        header.    equity.text = String.format(resources.getString(R.string.equity), equityVal)
+        header.    currentReturn.text = String.format(resources.getString(R.string.curReturn), stock.curReturn + equityVal)
+        header.   card_equity.visibility = View.VISIBLE
+        header.    notOwnedText.visibility = View.GONE
     }
     fun setHistoryTextViews(){
-        totalTransactions.text =  String.format(resources.getString(R.string.numTrans), stock.numTransactions.toString())
-        totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
-        card_history.visibility = View.VISIBLE
+        header.     totalTransactions.text =  String.format(resources.getString(R.string.numTrans), stock.numTransactions.toString())
+        header.     totalReturn.text =  String.format(resources.getString(R.string.totalReturn), stock.totalReturn.toString())
+        header.     card_history.visibility = View.VISIBLE
     }
     fun enableOrDisableButtons(){
         if(balance >= stock.price){
-            enable(buy)
+            enable(header.buy)
         }
         else{
-            disable(buy)
+            disable(header.buy)
         }
         if(stock.numOwned == 0){
-            disable(sell)
+            disable(header.sell)
         }
         else{
-            enable(sell)
+            enable(header.sell)
         }
     }
     private fun enable(button: Button){
@@ -137,7 +141,7 @@ class StockActivity : AppCompatActivity() {
 
                 }
                 if(user.hasChild("added") && user.child("added").hasChild(sym)){
-                    watch_btn.text = getString(R.string.stop_watch)
+                    header.   watch_btn.text = getString(R.string.stop_watch)
                     watchState = 1
                 }
                 if(user.hasChild("stats") && user.child("stats").child("transCount").hasChild(sym)){
@@ -165,21 +169,33 @@ class StockActivity : AppCompatActivity() {
         }
         val linedata:LineDataSet = LineDataSet(entries, "Price")
         linedata.color = R.color.colorPrimary
-        chart.data = LineData(linedata)
-        chart.xAxis.granularity = 1f
-        chart.xAxis.valueFormatter = MyValueFormatter(historyData.labels)
-        chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        chart.axisRight.isEnabled = false
-        chart.setDrawGridBackground(false)
-        chart.isAutoScaleMinMaxEnabled = true
+        header.  chart.data = LineData(linedata)
+        header.    chart.xAxis.granularity = 1f
+        header.    chart.xAxis.valueFormatter = MyValueFormatter(historyData.labels)
+        header.    chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        header.    chart.axisRight.isEnabled = false
+        header.   chart.setDrawGridBackground(false)
+        header.   chart.isAutoScaleMinMaxEnabled = true
         val desc = Description()
         desc.text = "Recent price history for $sym"
-        chart.description = desc
-        chart.invalidate()
+        header.   chart.description = desc
+        header.   chart.invalidate()
     }
     fun setupNewsList(newsList:ArrayList<NewsItem>){
-        //do stuff
+        val adapter = NewsListAdapter(this, newsList)
+        news_items.adapter = adapter
+         news_items.setOnItemClickListener { _, _, position, _ ->
+             val selectedArticle = newsList[position]
+             val intent = Intent(this, WebView::class.java)
+             intent.putExtra("url", selectedArticle.url)
+             startActivity(intent)
+         }
     }
+
+
+
+
+
     private fun createDialogue(type:Action){
         var numberPicker = NumberPicker(this)
         var max:Int = 0
@@ -239,7 +255,7 @@ class StockActivity : AppCompatActivity() {
                                 if(stock.numOwned == 0){
                                     database.child("users").child(auth.uid).child("owned").child(sym).removeValue()
                                     database.child("users").child(auth.uid).child("return").child(sym).removeValue()
-                                    card_equity.visibility = View.GONE
+                                    header.            card_equity.visibility = View.GONE
                                 }
                                 else{
                                     setOwnedTextViews()

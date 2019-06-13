@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@id/watch_btn"
+                android:textSize="26dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="Symbol Placeholder" />
+
+            <Button
+                android:id="@+id/watch_btn"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textAlignment="center"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center_vertical"
+                android:text="@string/watch" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="26dp"
+                android:gravity="center_vertical"
+                android:text="Price Placeholder" />
+            <TextView
+                android:id="@+id/change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                android:gravity="center_vertical"
+                android:text="Change Placeholder" />
+            <TextView
+                android:id="@+id/change_pct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                android:gravity="center_vertical"
+                android:text="Change pct Placeholder" />
+
+
+
+
+        </LinearLayout>
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_marginTop="20dp"
+            android:layout_width="fill_parent"
+            android:layout_height="300dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/buy"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/buy"/>
+            <Button
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/sell"
+                android:id="@+id/sell"/>
+        </LinearLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            card_view:cardBackgroundColor="@android:color/white"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="5dp"
+            card_view:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More Info"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textSize="18dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"
+                    android:id="@+id/todayHigh"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"
+                    android:id="@+id/todayLow"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/yearHigh"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/yearLow"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/marketCap"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/shares"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/volume"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/volume_avg"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_equity"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            card_view:cardBackgroundColor="@android:color/white"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="5dp"
+            card_view:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Equity"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero"
+                    android:id="@+id/equity"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/zero"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/currentReturn"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/zero"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numShares"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_history"
+            android:visibility="gone"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            card_view:cardBackgroundColor="@android:color/white"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="5dp"
+            card_view:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your History"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/totalTransactions"
+                    android:text="@string/zero"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/totalReturn"
+                    android:text="@string/zero"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/noHistory"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/notOwnedText"/>
+
+    </LinearLayout>
+
+</ScrollView>
+
+</LinearLayout>

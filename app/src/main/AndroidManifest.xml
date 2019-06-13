@@ -45,7 +45,8 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".StockActivity" />
-        <activity android:name=".ErrorActivity"></activity>
+        <activity android:name=".ErrorActivity" />
+        <activity android:name=".WebView"></activity>
     </application>
 
 </manifest>
