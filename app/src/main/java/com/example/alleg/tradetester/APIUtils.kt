@@ -49,6 +49,42 @@ object APIUtils{
 
     }
 
+    fun makeNewsAPICall(symbol:String, context:Context){
+
+        val queue = Volley.newRequestQueue(context)
+        var url = "https://stocknewsapi.com/api/v1?"
+        url += "token=ljuasvceqjjkuazku0elqdw2s3sbhqvhfkthvg6c"
+        url += "&tickers=" + symbol
+        url += "&type=article"
+        url += "&items=5"
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
+                Response.Listener { response ->
+                    if (response.has("data")) {
+                        var data: JSONArray = response.getJSONArray("data")
+                        val newsList = arrayListOf<NewsItem>()
+                        for(i in 0 until data.length()){
+                             newsList.add(NewsItem(data.getJSONObject(i)))
+                        }
+                        val activity = context as StockActivity
+                        activity.setupNewsList(newsList)
+
+
+                    } else {
+                      //oh snap no data came through
+                    }
+
+                },
+
+                Response.ErrorListener { error ->
+                    print(error.message)
+                    val message = error.message
+                }
+        )
+        val st = jsonObjectRequest.toString()
+        queue.add(jsonObjectRequest)
+
+
+    }
     class HistoryResponse(symbol: String, context: Context){
         var labels = arrayListOf<String>()
          var prices = arrayListOf<Float>()

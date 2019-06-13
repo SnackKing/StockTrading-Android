@@ -68,6 +68,7 @@ class StockActivity : AppCompatActivity() {
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
+        APIUtils.makeNewsAPICall(sym,this)
 
     }
     fun setTextViews(){
@@ -175,6 +176,9 @@ class StockActivity : AppCompatActivity() {
         desc.text = "Recent price history for $sym"
         chart.description = desc
         chart.invalidate()
+    }
+    fun setupNewsList(newsList:ArrayList<NewsItem>){
+        //do stuff
     }
     private fun createDialogue(type:Action){
         var numberPicker = NumberPicker(this)
