@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
     implementation 'com.mikhaellopez:hfrecyclerview-kotlin:1.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 
 
