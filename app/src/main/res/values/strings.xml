@@ -52,6 +52,15 @@
     <string name="error_placeholder">Something went wrong</string>
     <string name="no_stock_message">No stocks found. Are you sure you entered a valid symbol?</string>
     <string name="search_hint">Enter symbol here (ex: MSFT)</string>
+    <string name="sign_out">Sign Out </string>
+    <string name="your_account">Your Account </string>
+    <string name="transactions">Transactions</string>
+    <string name="about">About</string>
+
+
+
+
+
 
 
     <string name="permission_rationale">"Contacts permissions are needed for providing email
