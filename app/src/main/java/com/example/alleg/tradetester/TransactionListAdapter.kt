@@ -1,6 +1,7 @@
 package com.example.alleg.tradetester
 
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.transaction_item.view.*
 
 
 class TransactionListAdapter(
-        var mValues: List<Transaction>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>() {
+        var mValues: List<Transaction>, var context:Context) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionListAdapter.ViewHolder {
@@ -24,10 +25,10 @@ class TransactionListAdapter(
     override fun onBindViewHolder(holder: TransactionListAdapter.ViewHolder, position: Int) {
 
             val item = getItem(position)
-            holder.dateView.text = item.date
+            holder.dateView.text =  String.format(context.resources.getString(R.string.boughtDate), item.date)
             holder.symbolView.text = item.symbol
-            holder.priceView.text = item.price.toString()
-            holder.shareView.text = item.numShares.toString()
+            holder.priceView.text = String.format(context.resources.getString(R.string.pricePerShare), item.price.toString())
+            holder.shareView.text = String.format(context.resources.getString(R.string.transShares), item.numShares.toString())
     }
 
 

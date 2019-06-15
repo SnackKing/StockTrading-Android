@@ -56,17 +56,17 @@ class TransactionList : AppCompatActivity() {
                 if(data.hasChild("buy")){
                     data.child("buy").children.forEach{
                         val price = it.child("price").value.toString().toFloat()
-                        val symbol = it.child("price").value.toString()
+                        val symbol = it.child("symbol").value.toString()
                         val numShares = it.child("numShares").value.toString().toInt()
                         buys.add(Transaction(it.key,symbol, numShares,price))
                     }
-                    adapter = TransactionListAdapter(buys)
+                    adapter = TransactionListAdapter(buys,applicationContext)
                     transList.adapter = adapter
                 }
                 if(data.hasChild("sell")){
                     data.child("sell").children.forEach{
                         val price = it.child("price").value.toString().toFloat()
-                        val symbol = it.child("price").value.toString()
+                        val symbol = it.child("symbol").value.toString()
                         val numShares = it.child("numShares").value.toString().toInt()
                         sells.add(Transaction(it.key,symbol, numShares,price))
                     }

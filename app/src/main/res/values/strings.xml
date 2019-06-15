@@ -57,6 +57,13 @@
     <string name="transactions">Transactions</string>
     <string name="about">About</string>
 
+    <string name="boughtDate">Bought on %1$s </string>
+    <string name="transShares">Number of Shares: %1$s </string>
+    <string name="pricePerShare">Price per Share: $%1$s </string>
+
+
+
+
 
     <string name="permission_rationale">"Contacts permissions are needed for providing email
 
