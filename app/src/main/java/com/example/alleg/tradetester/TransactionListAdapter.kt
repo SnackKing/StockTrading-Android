@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.transaction_item.view.*
 
 
 class TransactionListAdapter(
-        private val mValues: List<Transaction>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>() {
+        var mValues: List<Transaction>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionListAdapter.ViewHolder {

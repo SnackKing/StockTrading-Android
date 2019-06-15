@@ -17,6 +17,7 @@ class TransactionList : AppCompatActivity() {
     lateinit var database: DatabaseReference
     var buys = arrayListOf<Transaction>()
     var sells = arrayListOf<Transaction>()
+    lateinit var adapter:TransactionListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,13 @@ class TransactionList : AppCompatActivity() {
         transTabs.addTab(transTabs.newTab().setText("Sell Orders"))
         transTabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab:TabLayout.Tab) {
-                Toast.makeText(applicationContext, ("Tab is " + transTabs.selectedTabPosition), Toast.LENGTH_SHORT).show()
+                    if (tab.position == 0) {
+                        adapter.mValues = buys
+                    } else {
+                        adapter.mValues = sells
+                    }
+                    adapter.notifyDataSetChanged()
+
 
             }
             override fun onTabUnselected(tab:TabLayout.Tab) {
@@ -53,8 +60,16 @@ class TransactionList : AppCompatActivity() {
                         val numShares = it.child("numShares").value.toString().toInt()
                         buys.add(Transaction(it.key,symbol, numShares,price))
                     }
-                   var adapter = TransactionListAdapter(buys)
+                    adapter = TransactionListAdapter(buys)
                     transList.adapter = adapter
+                }
+                if(data.hasChild("sell")){
+                    data.child("sell").children.forEach{
+                        val price = it.child("price").value.toString().toFloat()
+                        val symbol = it.child("price").value.toString()
+                        val numShares = it.child("numShares").value.toString().toInt()
+                        sells.add(Transaction(it.key,symbol, numShares,price))
+                    }
                 }
             }
             override fun onCancelled(p0: DatabaseError?) {
