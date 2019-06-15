@@ -2,6 +2,7 @@ package com.example.alleg.tradetester
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -62,7 +63,7 @@ class HomeActivity : StockListFragment.OnListFragmentInteractionListener, Watche
             // User chose the "Favorite" action, mark the current item
             // as a favorite...
             Toast.makeText(this, "trans", Toast.LENGTH_SHORT).show()
-
+            startActivity(Intent(this, TransactionList::class.java))
             true
         }
         R.id.about -> {

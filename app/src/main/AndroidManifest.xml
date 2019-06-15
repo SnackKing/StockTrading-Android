@@ -46,7 +46,8 @@
         </activity>
         <activity android:name=".StockActivity" />
         <activity android:name=".ErrorActivity" />
-        <activity android:name=".WebView"></activity>
+        <activity android:name=".WebView" />
+        <activity android:name=".TransactionList"></activity>
     </application>
 
 </manifest>
