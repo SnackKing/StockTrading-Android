@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_error.*
 
-class ErrorActivity : AppCompatActivity() {
+class ErrorActivity : BaseActivity() {
 
     public enum class ErrorCodes{
         NO_STOCK_FOUND,

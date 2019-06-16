@@ -29,7 +29,7 @@ import java.sql.Timestamp
 import java.util.Date
 import kotlin.collections.ArrayList
 
-class StockActivity : AppCompatActivity() {
+class StockActivity : BaseActivity() {
     lateinit var header:View
     private lateinit var sym:String
     private lateinit var stock:Stock

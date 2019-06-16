@@ -12,7 +12,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_transaction_list.*
 import kotlinx.android.synthetic.main.stock_content.*
 
-class TransactionList : AppCompatActivity() {
+class TransactionList : BaseActivity() {
 
     lateinit var auth: FirebaseAuth
     lateinit var database: DatabaseReference
