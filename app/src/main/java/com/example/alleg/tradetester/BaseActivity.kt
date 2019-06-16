@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 open class BaseActivity: AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);   //show back button
         val inflater = menuInflater
         inflater.inflate(R.menu.options_menu, menu)
         // Associate searchable configuration with the SearchView
@@ -23,6 +24,7 @@ open class BaseActivity: AppCompatActivity() {
 
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.search -> {
             // User chose the "Settings" item, show the app settings UI...
@@ -60,4 +62,9 @@ open class BaseActivity: AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+
+    }
 }

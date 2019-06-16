@@ -54,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(baseContext, "Authentication Successful.",
                                 Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, HomeActivity::class.java))
+                        finish()
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.exception)
