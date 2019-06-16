@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".TransactionList">
     <android.support.design.widget.TabLayout
         android:id="@+id/transTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/colorPrimary"
         app:tabMode="fixed" />
     <android.support.v7.widget.RecyclerView
         android:layout_below="@id/transTabs"
