@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 
 open class BaseActivity: AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -37,9 +38,6 @@ open class BaseActivity: AppCompatActivity() {
             true
         }
         R.id.transactions -> {
-            // User chose the "Favorite" action, mark the current item
-            // as a favorite...
-            Toast.makeText(this, "trans", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, TransactionList::class.java))
             true
         }
@@ -50,9 +48,9 @@ open class BaseActivity: AppCompatActivity() {
             true
         }
         R.id.signout -> {
-            // User chose the "Favorite" action, mark the current item
-            // as a favorite...
-            Toast.makeText(this, "signout", Toast.LENGTH_SHORT).show()
+            //log user out and navigate to
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
             true
         }
         else -> {
