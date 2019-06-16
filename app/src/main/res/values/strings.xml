@@ -51,6 +51,7 @@
     <string name="search_title">Search</string>
     <string name="error_placeholder">Something went wrong</string>
     <string name="no_stock_message">No stocks found. Are you sure you entered a valid symbol?</string>
+    <string name="error_reading_data">Something went wrong while trying to get data. Try again later.</string>
     <string name="search_hint">Enter symbol here (ex: MSFT)</string>
     <string name="sign_out">Sign Out </string>
     <string name="your_account">Your Account </string>
@@ -61,6 +62,10 @@
     <string name="transShares">Number of Shares: %1$s </string>
     <string name="pricePerShare">Price per Share: $%1$s </string>
 
+    <string name="personal_info">Personal Info</string>
+    <string name="portfolio">Your Portfolio</string>
+
+    <string name="portfolioItem">%1$s:%2$s shares </string>
 
 
 

@@ -8,7 +8,8 @@ class ErrorActivity : BaseActivity() {
 
     public enum class ErrorCodes{
         NO_STOCK_FOUND,
-        SOMETHING_WENT_WRONG
+        SOMETHING_WENT_WRONG,
+        ERROR_READING_DATA
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +21,9 @@ class ErrorActivity : BaseActivity() {
     private fun getMessage(code:ErrorCodes):String{
         if(code == ErrorCodes.NO_STOCK_FOUND){
             return getString(R.string.no_stock_message)
+        }
+        else if(code == ErrorCodes.ERROR_READING_DATA){
+            return getString(R.string.error_reading_data)
         }
         else{
             return getString(R.string.error_placeholder)

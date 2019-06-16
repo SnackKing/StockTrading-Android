@@ -35,8 +35,7 @@ open class BaseActivity: AppCompatActivity() {
         R.id.account -> {
             // User chose the "Favorite" action, mark the current item
             // as a favorite...
-            Toast.makeText(this, "account", Toast.LENGTH_SHORT).show()
-
+            startActivity(Intent(this,AccountActivity::class.java))
             true
         }
         R.id.transactions -> {
