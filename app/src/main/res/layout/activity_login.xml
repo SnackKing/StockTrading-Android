@@ -26,6 +26,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:theme="@style/TextInputLayoutAppearance"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/email"
@@ -42,6 +43,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:theme="@style/TextInputLayoutAppearance"
                 android:layout_height="wrap_content">
 
                 <EditText
@@ -63,6 +65,7 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
@@ -74,6 +77,7 @@
             <Button
                 android:id="@+id/go_sign_up"
                 style="?android:textAppearanceSmall"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
