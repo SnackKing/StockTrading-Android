@@ -64,8 +64,14 @@
 
     <string name="personal_info">Personal Info</string>
     <string name="portfolio">Your Portfolio</string>
+    <string name="favorites">Your Favorite Stocks</string>
+    <string name="total_assets">Total Assets</string>
 
-    <string name="portfolioItem">%1$s:%2$s shares </string>
+
+
+    <string name="portfolioItem">%1$s: %2$s shares </string>
+    <string name="favoriteItem">%1$s: %2$s shares ordered </string>
+
 
 
 

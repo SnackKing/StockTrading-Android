@@ -133,4 +133,7 @@ object APIUtils{
             return format.format(dateBefore)
         }
     }
+    fun getPricesForAllOwned(owned:String){
+
+    }
 }
