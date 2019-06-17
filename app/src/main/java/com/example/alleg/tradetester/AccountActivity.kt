@@ -19,32 +19,40 @@ import android.widget.LinearLayout
 
 class AccountActivity : BaseActivity() {
     var portfolio = hashMapOf<String,String>()
+    var balanceVal = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
         readData()
     }
 
-    fun readData(){
+    private fun readData(){
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().reference
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val context = this
         params.setMargins(5,5,0,5);
         ref.child("users").child(uid).addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(data: DataSnapshot) {
                 name.text = data.child("name").value.toString()
                 email.text = data.child("email").value.toString()
-                balance.text = "$" + (Math.round(data.child("balance").getValue().toString().toDouble() *100)/100).toString()
+                balanceVal = ("%.2f".format(data.child("balance").getValue().toString().toDouble())).toDouble()
+                balance.text = "$" + (balanceVal.toString())
                 if(data.hasChild("owned")){
-
+                    var paramString:StringBuilder = StringBuilder()
                     data.child("owned").children.forEach{
+                        paramString.append(it.key)
+                        paramString.append(',')
                         portfolio[it.key] = it.value.toString()
                         val newText = TextView(applicationContext)
                         newText.setText(String.format(resources.getString(R.string.portfolioItem),it.key,portfolio[it.key]))
                         newText.layoutParams = params
                         portfolioView.addView(newText)
                     }
+                    if(paramString.length > 0) paramString.removeSuffix(",")
+                    APIUtils.getPricesForAllOwned(paramString.toString(),context)
                 }
+
             }
             override fun onCancelled(p0: DatabaseError?) {
                 val errorIntent = Intent(applicationContext, ErrorActivity::class.java)
@@ -73,5 +81,24 @@ class AccountActivity : BaseActivity() {
             }
 
         })
+    }
+    fun populateAssets(priceMap:HashMap<String,Double>){
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        params.setMargins(5,5,0,5);
+        var totalVal = 0.0
+        priceMap.forEach{
+            val price = it.value
+            val num = portfolio[it.key]?.toInt() ?: 0
+            val eq = price *num
+            val newText = TextView(this)
+            val text = String.format(getString(R.string.assetItem),it.key, ("%.2f".format(eq)))
+            newText.text = text
+            newText.layoutParams = params
+            assetsView.addView(newText)
+            totalVal += eq
+        }
+        total.text = "Total: $" + "%.2f".format(totalVal + balanceVal)
+        balanceAssets.text = "Balance: $" + balanceVal.toString()
+
     }
 }

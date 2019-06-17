@@ -71,6 +71,8 @@
 
     <string name="portfolioItem">%1$s: %2$s shares </string>
     <string name="favoriteItem">%1$s: %2$s shares ordered </string>
+    <string name="assetItem">%1$s: $%2$s </string>
+
 
 
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
@@ -133,7 +134,29 @@ object APIUtils{
             return format.format(dateBefore)
         }
     }
-    fun getPricesForAllOwned(owned:String){
+    fun getPricesForAllOwned(owned:String, context: Context){
+        val queue = Volley.newRequestQueue(context)
+        var url = "https://cloud.iexapis.com/stable/tops/last?"
+        url += "token=sk_0a0d416a40b6401a87b46811783be7be"
+        url += "&symbols=" + owned
+        val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, url, null,
+                Response.Listener { response ->
+                    val priceDict = hashMapOf<String,Double>()
+                    for(i in 0 until response.length()){
+                        val stock:JSONObject = response.getJSONObject(i)
+                        priceDict[stock.getString("symbol")] = stock.getDouble("price")
+                    }
+                    val act = context as AccountActivity
+                    act.populateAssets(priceDict)
+
+                },
+
+                Response.ErrorListener { error ->
+                    print(error.message)
+                    val message = error.message
+                }
+        )
+        queue.add(jsonObjectRequest)
 
     }
 }
