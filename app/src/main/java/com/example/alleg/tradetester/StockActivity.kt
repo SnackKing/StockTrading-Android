@@ -22,10 +22,12 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_stock.*
+import kotlinx.android.synthetic.main.stock_content.*
 import kotlinx.android.synthetic.main.stock_content.view.*
 import org.json.JSONObject
 import java.lang.reflect.Field
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.collections.ArrayList
 
@@ -118,6 +120,11 @@ class StockActivity : BaseActivity() {
         }
         else{
             enable(header.sell)
+        }
+        if(!TimeUtils.isMarketOpen()){
+            disable(header.buy)
+            disable(header.sell)
+            closedMarkets.visibility = View.VISIBLE
         }
     }
     private fun enable(button: Button){
