@@ -15,10 +15,10 @@ import java.util.*
 
 
 object APIUtils{
-    public fun makeAPICallForSingleStock(symbol: String, context: Context) {
+    fun makeAPICallForSingleStock(symbol: String, context: Context) {
         val queue = Volley.newRequestQueue(context)
         var url = "https://www.worldtradingdata.com/api/v1/stock?"
-        url += "api_token=mkUwgwc7TADeShHuZO7D2RRbeLu1b9PNd6Ptey0LkIeRliCUjdLJJB9UE4UX"
+        url += "api_token=" + getAPIKeyWTD()
         url += "&symbol=" + symbol
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
@@ -27,14 +27,14 @@ object APIUtils{
                         val stock: JSONObject = data.getJSONObject(0)
                         var stockIntent = Intent(context, StockActivity::class.java)
                         stockIntent.putExtra("data", stock.toString())
-                        stockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        stockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
                         context.startActivity(stockIntent)
 
                     } else {
                         var errorIntent = Intent(context, ErrorActivity::class.java)
                         errorIntent.putExtra("code", ErrorActivity.ErrorCodes.NO_STOCK_FOUND)
-                        errorIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        errorIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(errorIntent)
                     }
 
@@ -54,7 +54,7 @@ object APIUtils{
 
         val queue = Volley.newRequestQueue(context)
         var url = "https://stocknewsapi.com/api/v1?"
-        url += "token=ljuasvceqjjkuazku0elqdw2s3sbhqvhfkthvg6c"
+        url += "token=" + getAPIKeyNews()
         url += "&tickers=" + symbol
         url += "&type=article"
         url += "&items=5"
@@ -89,14 +89,15 @@ object APIUtils{
     class HistoryResponse(symbol: String, context: Context){
         var labels = arrayListOf<String>()
          var prices = arrayListOf<Float>()
-        var ready = false;
+        var ready = false
+
         init{
             val queue = Volley.newRequestQueue(context)
             val format = SimpleDateFormat("yyyy-MM-dd")
             val today = format.format(Date())
             val weekAgo = getEarlierDate(7, format)
             var url = "https://www.worldtradingdata.com/api/v1/history?"
-            url += "api_token=mkUwgwc7TADeShHuZO7D2RRbeLu1b9PNd6Ptey0LkIeRliCUjdLJJB9UE4UX"
+            url += "api_token=" + getAPIKeyWTD()
             url += "&symbol=" + symbol
             url += "&date_from=" + weekAgo
             url += "&date_to=" + today
@@ -111,7 +112,7 @@ object APIUtils{
                                 labels.add(key)
                                 prices.add(data.getJSONObject(key).getString("close").toFloat())
                             }
-                            ready = true;
+                            ready = true
                         val act = context as StockActivity
                         act.setupLineChart(this)
 
@@ -158,5 +159,27 @@ object APIUtils{
         )
         queue.add(jsonObjectRequest)
 
+    }
+    fun getAPIKeyWTD():String{
+        val rand:Int = (0..1).shuffled().first()
+        if(rand == 0){
+            return "BUy6ADUbn2X5OpX1LjoPhNZoZ5V91i9ciuD9rWIY7uzN8nrqgFAeyt7qlabJ"
+
+        }
+        else{
+            return "MAImKvqnS835Ss55CnO1PSaex6L3u31zptrgVDWrzco9VoGFbv6obMnhJUxt"
+
+        }
+    }
+    fun getAPIKeyNews():String{
+        val rand:Int = (0..1).shuffled().first()
+        if(rand == 0){
+            return "jceey2zg7nzze5vvib9mvuyvnllco19rv4iubci4"
+
+        }
+        else{
+            return "su9hyiut5gy7t0u4uqjs0k81wa5l7anhanlvpudw"
+
+        }
     }
 }
