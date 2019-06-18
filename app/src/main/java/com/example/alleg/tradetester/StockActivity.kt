@@ -50,6 +50,7 @@ class StockActivity : BaseActivity() {
         val mJsonObject = JSONObject(intent.getStringExtra("data"))
         stock = Stock(mJsonObject)
         sym = stock.symbol
+        title = sym
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         setTextViews()

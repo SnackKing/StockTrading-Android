@@ -6,11 +6,11 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_joincode">Join Code (Optional)</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_up">Sign up</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="action_sign_in_short">Log In</string>
     <string name="action_gosignup">Go Sign Up</string>
-    <string name="action_gologin">Go Sign Up</string>
-    <string name="action_no_account">Dont\'t have an account?</string>
+    <string name="action_gologin">Go Log In</string>
+    <string name="action_no_account">Don\'t have an account?</string>
     <string name="action_have_account">Already have an account?</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -72,6 +72,8 @@
     <string name="portfolioItem">%1$s: %2$s shares </string>
     <string name="favoriteItem">%1$s: %2$s shares ordered </string>
     <string name="assetItem">%1$s: $%2$s </string>
+
+
 
 
 

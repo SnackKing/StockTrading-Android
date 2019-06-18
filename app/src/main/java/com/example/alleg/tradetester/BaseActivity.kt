@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -12,8 +14,10 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 
 open class BaseActivity: AppCompatActivity() {
+
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);   //show back button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)   //show back button
         val inflater = menuInflater
         inflater.inflate(R.menu.options_menu, menu)
         // Associate searchable configuration with the SearchView

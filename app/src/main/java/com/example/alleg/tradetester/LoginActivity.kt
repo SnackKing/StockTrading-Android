@@ -21,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        title = getString(R.string.action_sign_in_short)
         auth = FirebaseAuth.getInstance()
         if(auth.currentUser != null){
             startActivity(Intent(this, HomeActivity::class.java))
