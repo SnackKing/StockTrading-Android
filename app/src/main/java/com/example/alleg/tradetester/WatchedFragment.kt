@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_watched_list.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -52,9 +53,10 @@ class WatchedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
         ownedView = view.findViewById<RecyclerView>(R.id.ownedList)
-        ownedView.setLayoutManager(LinearLayoutManager(getActivity()));
+        ownedView.isNestedScrollingEnabled = false
+        ownedView.layoutManager = LinearLayoutManager(activity)
         readDataAndCreateAdapter()
-        ownedView.setItemAnimator(DefaultItemAnimator())
+        ownedView.itemAnimator = DefaultItemAnimator()
 
 
 
@@ -65,7 +67,7 @@ class WatchedFragment : Fragment() {
         val userReference = FirebaseDatabase.getInstance().reference.child("users").child(uid).child("added")
         val stockListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(dataSnapshot.getValue() != null){
+                if(dataSnapshot.value != null){
                     val ownedList = arrayListOf<Stock>()
                     val children = dataSnapshot.children
                     var symbolGroup = arrayListOf<String>()
