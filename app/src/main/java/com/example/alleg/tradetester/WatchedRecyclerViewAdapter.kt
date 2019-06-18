@@ -1,6 +1,7 @@
 package com.example.alleg.tradetester
 
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -29,9 +30,10 @@ class WatchedRecyclerViewAdapter(
     }
     private val TYPE_HEADER = 0
     private val TYPE_ITEM = 1
+    private lateinit var context:Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
+        context = parent.context
         if (viewType == TYPE_ITEM) {
             //inflate your layout and pass it to view holder
             val view = LayoutInflater.from(parent.context)
@@ -41,10 +43,10 @@ class WatchedRecyclerViewAdapter(
             //inflate your layout and pass it to view holder
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.owned_header, parent, false)
-            return VHHeader(view);
+            return VHHeader(view)
         }
 
-        throw  RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
+        throw  RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly")
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -52,16 +54,21 @@ class WatchedRecyclerViewAdapter(
             val item = mValues[position-1]
             holder.mSymbolView.text = item.symbol
             holder.mNameView.text = item.name
-            holder.mPriceView.text = (item.price).toString()
+            holder.mPriceView.text = String.format(context.resources.getString(R.string.price), item.price.toString())
             holder.mChangeView.text = String.format(holder.itemView.context.getString(R.string.bothChanges), item.change.toString(), item.change_pct.toString())
-
+            if(item.change < 0){
+                holder.mChangeView.setTextColor(context.resources.getColor(R.color.red))
+            }
+            else{
+                holder.mChangeView.setTextColor(context.resources.getColor(R.color.green))
+            }
             with(holder.itemView) {
                 tag = item
                 setOnClickListener(mOnClickListener)
             }
         }
         else if(holder is VHHeader) {
-            holder.textview!!.text = "Stocks You're Watching"
+            holder.textview.text = "Stocks You're Watching"
 
         }
     }
