@@ -57,6 +57,8 @@
     <string name="your_account">Your Account </string>
     <string name="transactions">Transactions</string>
     <string name="about">About this App</string>
+    <string name="home">Home</string>
+
 
     <string name="boughtDate">Bought on %1$s </string>
     <string name="transShares">Number of Shares: %1$s </string>

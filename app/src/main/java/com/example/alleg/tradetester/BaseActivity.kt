@@ -30,6 +30,13 @@ open class BaseActivity: AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.home ->{
+            if(this::class.java.simpleName != "HomeActivity"){
+                Toast.makeText(this,"Home", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, HomeActivity::class.java))
+            }
+            true
+        }
         R.id.search -> {
             // User chose the "Settings" item, show the app settings UI...
             true
