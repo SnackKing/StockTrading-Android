@@ -68,8 +68,12 @@ class WatchedRecyclerViewAdapter(
             }
         }
         else if(holder is VHHeader) {
-            holder.textview.text = "Stocks You're Watching"
-
+            if(mValues.size == 0){
+                holder.textview.text = "Stocks you're watching will show up here"
+            }
+            else {
+                holder.textview.text = "Stocks you're Watching"
+            }
         }
     }
 
@@ -85,7 +89,7 @@ class WatchedRecyclerViewAdapter(
         return mValues.get(position-1)
     }
 
-    override fun getItemCount(): Int = mValues.size
+    override fun getItemCount(): Int = if(mValues.size > 0) mValues.size else 1
 
     internal inner class VHItem(mView: View) : RecyclerView.ViewHolder(mView) {
         val mSymbolView: TextView = mView.symbol

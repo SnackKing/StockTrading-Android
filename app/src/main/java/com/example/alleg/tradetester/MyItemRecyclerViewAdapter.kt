@@ -52,8 +52,6 @@ class MyItemRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-
-
         if (holder is VHItem) {
             val item = mValues[position-1]
             //cast holder to VHItem and set data
@@ -73,7 +71,12 @@ class MyItemRecyclerViewAdapter(
             }
         } else if (holder is VHHeader) {
             //cast holder to VHHeader and set data for header.
-            holder.textview.text = "Stocks you own"
+            if(mValues.size == 0){
+                holder.textview.text = "Stocks you own will show up here"
+            }
+            else {
+                holder.textview.text = "Stocks you Own"
+            }
         }
     }
 
@@ -90,7 +93,7 @@ class MyItemRecyclerViewAdapter(
         return mValues.get(position-1)
     }
 
-    override fun getItemCount(): Int = mValues.size
+    override fun getItemCount(): Int = if(mValues.size > 0) mValues.size else 1
 
     internal inner class VHItem(mView: View) : RecyclerView.ViewHolder(mView) {
         val mSymbolView: TextView = mView.symbol

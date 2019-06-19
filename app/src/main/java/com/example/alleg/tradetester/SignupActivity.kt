@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_signup.*
 
 /**
@@ -44,6 +45,7 @@ class SignupActivity : AppCompatActivity() {
         // Store values at the time of the login attempt.
         val emailStr = email.text.toString()
         val passwordStr = password.text.toString()
+        val nameStr = name.text.toString()
 
         var cancel = false
         var focusView: View? = null
@@ -73,15 +75,20 @@ class SignupActivity : AppCompatActivity() {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            firebaseLogin(emailStr, passwordStr)
+            firebaseLogin(nameStr, emailStr, passwordStr)
 
         }
     }
 
-    private fun firebaseLogin(email:String, password:String){
+    private fun firebaseLogin(name: String, email:String, password:String){
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
+                        val uid = FirebaseAuth.getInstance().uid
+                        val ref = FirebaseDatabase.getInstance().reference.child("users").child(uid)
+                        ref.child("balance").setValue(500)
+                        ref.child("name").setValue(name)
+                        ref.child("email").setValue(email)
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success")
                         val user = auth.currentUser
@@ -101,12 +108,10 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun isEmailValid(email: String): Boolean {
-        //TODO: Replace this with your own logic
         return email.contains("@")
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        //TODO: Replace this with your own logic
         return password.length > 4
     }
 

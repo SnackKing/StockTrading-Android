@@ -56,6 +56,7 @@ class StockListFragment : Fragment() {
         ownedView.isNestedScrollingEnabled = false
 
         ownedView.layoutManager = LinearLayoutManager(activity)
+        ownedView.adapter = MyItemRecyclerViewAdapter(arrayListOf<Stock>(),listener)
         readDataAndCreateAdapter()
         ownedView.itemAnimator = DefaultItemAnimator()
 

@@ -55,6 +55,7 @@ class WatchedFragment : Fragment() {
         ownedView = view.findViewById<RecyclerView>(R.id.ownedList)
         ownedView.isNestedScrollingEnabled = false
         ownedView.layoutManager = LinearLayoutManager(activity)
+        ownedView.adapter = WatchedRecyclerViewAdapter(arrayListOf<Stock>(), listener)
         readDataAndCreateAdapter()
         ownedView.itemAnimator = DefaultItemAnimator()
 
