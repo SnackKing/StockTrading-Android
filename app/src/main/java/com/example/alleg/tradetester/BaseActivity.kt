@@ -32,7 +32,6 @@ open class BaseActivity: AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.search -> {
             // User chose the "Settings" item, show the app settings UI...
-            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
             true
         }
 
@@ -49,7 +48,7 @@ open class BaseActivity: AppCompatActivity() {
         R.id.about -> {
             // User chose the "Favorite" action, mark the current item
             // as a favorite...
-            Toast.makeText(this, "about", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, AboutActivity::class.java))
             true
         }
         R.id.signout -> {

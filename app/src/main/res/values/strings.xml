@@ -56,7 +56,7 @@
     <string name="sign_out">Sign Out </string>
     <string name="your_account">Your Account </string>
     <string name="transactions">Transactions</string>
-    <string name="about">About</string>
+    <string name="about">About this App</string>
 
     <string name="boughtDate">Bought on %1$s </string>
     <string name="transShares">Number of Shares: %1$s </string>
@@ -68,17 +68,12 @@
     <string name="total_assets">Total Assets</string>
 
 
-
     <string name="portfolioItem">%1$s: %2$s shares </string>
     <string name="favoriteItem">%1$s: %2$s shares ordered </string>
     <string name="assetItem">%1$s: $%2$s </string>
     <string name="markets_closed">The markets are currently closed.</string>
-
-
-
-
-
-
+    <string name="aboutText">Hello! My name is Zach and I built this app. If you enjoy it, please leave a review on the Google Play Store. If you have
+    any feedback, feel free to email me at allegrettidev@gmail.com. The web version of this app can be found at https://tradetester.herokuapp.com/</string>
 
 
 
