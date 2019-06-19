@@ -79,6 +79,8 @@ object APIUtils{
                 Response.ErrorListener { error ->
                     print(error.message)
                     val message = error.message
+                    val activity = context as StockActivity
+                    activity.setupNewsList(arrayListOf())
                 }
         )
         val st = jsonObjectRequest.toString()
@@ -178,7 +180,7 @@ object APIUtils{
 
         }
         else{
-            return "su9hyiut5gy7t0u4uqjs0k81wa5l7anhanlvpudw"
+            return "bkssnaaeyqt2vwwccqzlxhebr7ebs4rgi7krjmpn"
 
         }
     }

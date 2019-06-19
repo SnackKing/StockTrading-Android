@@ -93,7 +93,7 @@ class MyItemRecyclerViewAdapter(
         return mValues.get(position-1)
     }
 
-    override fun getItemCount(): Int = if(mValues.size > 0) mValues.size else 1
+    override fun getItemCount(): Int = if(mValues.size > 0) mValues.size+1 else 1
 
     internal inner class VHItem(mView: View) : RecyclerView.ViewHolder(mView) {
         val mSymbolView: TextView = mView.symbol

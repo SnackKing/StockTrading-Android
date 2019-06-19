@@ -31,13 +31,16 @@ class AccountActivity : BaseActivity() {
         val ref = FirebaseDatabase.getInstance().reference
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val context = this
-        params.setMargins(5,5,0,5);
+        params.setMargins(5,5,0,5)
         ref.child("users").child(uid).addListenerForSingleValueEvent(object:ValueEventListener{
             override fun onDataChange(data: DataSnapshot) {
                 name.text = data.child("name").value.toString()
                 email.text = data.child("email").value.toString()
-                balanceVal = ("%.2f".format(data.child("balance").getValue().toString().toDouble())).toDouble()
+                balanceVal = ("%.2f".format(data.child("balance").value.toString().toDouble())).toDouble()
                 balance.text = "$" + (balanceVal.toString())
+                balanceAssets.text = "Balance: $" + (balanceVal.toString())
+                total.text = "Total: $" + "%.2f".format(balanceVal)
+                total
                 if(data.hasChild("owned")){
                     var paramString:StringBuilder = StringBuilder()
                     data.child("owned").children.forEach{
@@ -45,7 +48,7 @@ class AccountActivity : BaseActivity() {
                         paramString.append(',')
                         portfolio[it.key] = it.value.toString()
                         val newText = TextView(applicationContext)
-                        newText.setText(String.format(resources.getString(R.string.portfolioItem),it.key,portfolio[it.key]))
+                        newText.text = String.format(resources.getString(R.string.portfolioItem),it.key,portfolio[it.key])
                         newText.layoutParams = params
                         portfolioView.addView(newText)
                     }
@@ -66,7 +69,7 @@ class AccountActivity : BaseActivity() {
                     val viewArray = arrayListOf<TextView>()
                     data.children.forEach {
                         val newText = TextView(applicationContext)
-                        newText.setText(String.format(resources.getString(R.string.favoriteItem),it.key,it.value.toString()))
+                        newText.text = String.format(resources.getString(R.string.favoriteItem),it.key,it.value.toString())
                         newText.layoutParams = params
                         viewArray.add(newText)
                     }
@@ -84,7 +87,7 @@ class AccountActivity : BaseActivity() {
     }
     fun populateAssets(priceMap:HashMap<String,Double>){
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(5,5,0,5);
+        params.setMargins(5,5,0,5)
         var totalVal = 0.0
         priceMap.forEach{
             val price = it.value

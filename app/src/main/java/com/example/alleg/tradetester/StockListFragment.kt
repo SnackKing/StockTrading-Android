@@ -65,6 +65,11 @@ class StockListFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        readDataAndCreateAdapter()
+    }
+
     fun readDataAndCreateAdapter(){
         val userReference = FirebaseDatabase.getInstance().reference.child("users").child(uid).child("owned")
         val stockListener = object : ValueEventListener {

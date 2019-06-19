@@ -48,6 +48,10 @@ class WatchedFragment : Fragment() {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
+    override fun onResume() {
+        super.onResume()
+        readDataAndCreateAdapter()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
