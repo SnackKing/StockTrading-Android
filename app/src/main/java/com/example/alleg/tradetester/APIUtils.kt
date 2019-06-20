@@ -3,11 +3,13 @@ package com.example.alleg.tradetester
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.view.View
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.stock_content.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -80,6 +82,7 @@ object APIUtils{
                     print(error.message)
                     val message = error.message
                     val activity = context as StockActivity
+                    activity.newsError.visibility = View.VISIBLE
                     activity.setupNewsList(arrayListOf())
                 }
         )

@@ -75,7 +75,11 @@ class StockActivity : BaseActivity() {
 
         Log.d("STOCK", "THIS WORKED")
         APIUtils.HistoryResponse(sym,this)
-        APIUtils.makeNewsAPICall(sym,this)
+        news_items.adapter = NewsListAdapter(this, arrayListOf())
+        getNews.setOnClickListener {
+            getNews.visibility = View.GONE
+            APIUtils.makeNewsAPICall(sym,this)
+        }
 
     }
     fun setTextViews(){

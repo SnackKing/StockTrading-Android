@@ -279,6 +279,22 @@
             android:text="@string/noHistory"
             android:layout_marginBottom="10dp"
             android:id="@+id/notOwnedText"/>
+        
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_news"
+            android:layout_margin="10sp"
+            android:id="@+id/getNews"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/news_error"
+            android:visibility="gone"
+            android:layout_margin="10sp"
+            android:id="@+id/newsError"/>
+
 
     </LinearLayout>
 

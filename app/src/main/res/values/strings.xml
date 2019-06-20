@@ -58,6 +58,10 @@
     <string name="transactions">Transactions</string>
     <string name="about">About this App</string>
     <string name="home">Home</string>
+    <string name="show_news">Tap to show news</string>
+    <string name="news_error">Something went wrong when trying to get the news. Try again later.</string>
+
+
 
 
     <string name="boughtDate">Bought on %1$s </string>
