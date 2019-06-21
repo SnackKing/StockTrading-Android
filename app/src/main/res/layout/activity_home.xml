@@ -8,11 +8,11 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <fragment android:name="com.example.alleg.tradetester.StockListFragment"
+        <fragment android:name="com.zachary.alleg.tradetester.StockListFragment"
             android:id="@+id/stocklist_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <fragment android:name="com.example.alleg.tradetester.WatchedFragment"
+        <fragment android:name="com.zachary.alleg.tradetester.WatchedFragment"
             android:id="@+id/watchedlist_fragment"
             android:layout_width="match_parent"
             android:layout_below="@+id/stocklist_fragment"
