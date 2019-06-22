@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -104,15 +105,15 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun firebaseLogin(name: String, email:String, password:String, code:String){
+    private fun firebaseLogin(name: String, emailStr:String, password:String, code:String){
 
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(emailStr, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val uid = FirebaseAuth.getInstance().uid
                         val ref = FirebaseDatabase.getInstance().reference.child("users").child(uid)
                         ref.child("name").setValue(name)
-                        ref.child("email").setValue(email)
+                        ref.child("email").setValue(emailStr)
                         if(TextUtils.isEmpty(code)){
                             ref.child("balance").setValue(500)
 
@@ -132,8 +133,10 @@ class SignupActivity : AppCompatActivity() {
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
                         Toast.makeText(baseContext, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
+                        if(task.exception is FirebaseAuthUserCollisionException){
+                            email.error = "That email is already taken"
+                        }
                     }
-                    // ...
                 }
 
     }
@@ -145,7 +148,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        return password.length > 4
+        return password.length > 6
     }
 
     private fun getCodes(){
