@@ -27,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         if(auth.currentUser != null){
             startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         }
         // Set up the login form.
         email_sign_in_button.setOnClickListener { attemptLogin() }
@@ -76,4 +77,5 @@ class LoginActivity : AppCompatActivity() {
                 }
 
     }
+
 }
