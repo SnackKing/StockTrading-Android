@@ -286,6 +286,7 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
             else if(time == ChartTime.MONTH){
                 val lineData = LineDataSet(lineDataMonth, "Price")
                 lineData.color = getColor(R.color.black)
+                lineData.setDrawValues(false)
                 lineData.valueTextSize = 10f
                 lineData.setCircleColor(getColor(R.color.black))
                 header.  chart.data = LineData(lineData)
@@ -294,6 +295,7 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 val lineData = LineDataSet(lineDataYear, "Price")
                 lineData.setCircleColor(getColor(R.color.black))
                 lineData.valueTextSize = 10f
+                lineData.setDrawValues(false)
                 lineData.color = getColor(R.color.black)
                 header.  chart.data = LineData(lineData)
             }
