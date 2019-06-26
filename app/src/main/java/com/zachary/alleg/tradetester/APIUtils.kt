@@ -9,6 +9,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.github.mikephil.charting.data.CandleData
+import com.github.mikephil.charting.data.CandleEntry
 import kotlinx.android.synthetic.main.stock_content.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -93,14 +95,14 @@ object APIUtils{
     }
     class HistoryResponse(symbol: String, context: Context){
         var labels = arrayListOf<String>()
-         var prices = arrayListOf<Float>()
+        var chartData = arrayListOf<CandleEntry>()
         var ready = false
 
         init{
             val queue = Volley.newRequestQueue(context)
             val format = SimpleDateFormat("yyyy-MM-dd")
             val today = format.format(Date())
-            val weekAgo = getEarlierDate(7, format)
+            val weekAgo = getEarlierDate(365, format)
             var url = "https://www.worldtradingdata.com/api/v1/history?"
             url += "api_token=" + getAPIKeyWTD()
             url += "&symbol=" + symbol
@@ -114,8 +116,10 @@ object APIUtils{
                             val keys = data.names()
                             for (i in 0 until keys.length()) {
                                 val key = keys.getString(i)
+                                val curDay = data.getJSONObject(key)
                                 labels.add(key)
-                                prices.add(data.getJSONObject(key).getString("close").toFloat())
+                                val currentEntry = CandleEntry(i.toFloat(), curDay.getString("high").toFloat(),curDay.getString("low").toFloat(), curDay.getString("open").toFloat(), curDay.getString("close").toFloat() )
+                                chartData.add(currentEntry)
                             }
                             ready = true
                         val act = context as StockActivity

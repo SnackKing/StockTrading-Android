@@ -15,6 +15,7 @@ import android.widget.*
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.CandleEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -31,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.collections.ArrayList
 
-class StockActivity : BaseActivity() {
+class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     lateinit var header:View
     private lateinit var sym:String
     private lateinit var stock:Stock
@@ -39,9 +40,34 @@ class StockActivity : BaseActivity() {
     lateinit var database: DatabaseReference
     var balance = 0f
     var watchState = 0
+
+    var lineDataWeek:ArrayList<Entry> = ArrayList<Entry>()
+    var lineDataMonth:ArrayList<Entry> = ArrayList<Entry>()
+    var lineDataYear:ArrayList<Entry> = ArrayList<Entry>()
+
+    var candleDataWeek:ArrayList<CandleEntry> = ArrayList<CandleEntry>()
+    var candleDataMonth:ArrayList<CandleEntry> = ArrayList<CandleEntry>()
+    var candleDataYear:ArrayList<CandleEntry> = ArrayList<CandleEntry>()
+
+    var labelsWeek:ArrayList<String> = ArrayList<String>()
+    var labelsMonth:ArrayList<String> = ArrayList<String>()
+    var labelsYear:ArrayList<String> = ArrayList<String>()
+
+    var type = ChartType.LINE
+    var time = ChartTime.WEEK
+
     enum class Action{
         BUY,
         SELL
+    }
+    enum class ChartType{
+        LINE,
+        CANDLESTICK
+    }
+    enum class ChartTime{
+        WEEK,
+        MONTH,
+        YEAR
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +106,36 @@ class StockActivity : BaseActivity() {
             getNews.visibility = View.GONE
             APIUtils.makeNewsAPICall(sym,this)
         }
+        setupSpinners()
 
+
+    }
+    fun setupSpinners(){
+        val timeSpinner: Spinner = findViewById(R.id.time_spinner)
+        ArrayAdapter.createFromResource(
+                this,
+                R.array.times_arrays,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            timeSpinner.adapter = adapter
+        }
+        timeSpinner.onItemSelectedListener = this
+
+        val typeSpinner: Spinner = findViewById(R.id.type_spinner)
+        ArrayAdapter.createFromResource(
+                this,
+                R.array.types_array,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            typeSpinner.adapter = adapter
+        }
+        typeSpinner.onItemSelectedListener = this
     }
     fun setTextViews(){
         header.symbol.text =  String.format(resources.getString(R.string.symbol), stock.name, stock.symbol)
@@ -176,14 +231,27 @@ class StockActivity : BaseActivity() {
     fun setupLineChart(historyData:APIUtils.HistoryResponse){
 
         val entries = ArrayList<Entry>()
-        for(i in 0 until 5){
-            entries.add(Entry(i.toFloat(),historyData.prices[i]))
+        for(i in 0 until historyData.chartData.size){
+            lineDataYear.add(Entry(i.toFloat(),historyData.chartData[i].close))
+            candleDataYear.add(historyData.chartData[i])
         }
-        val linedata:LineDataSet = LineDataSet(entries, "Price")
+        lineDataMonth = ArrayList(lineDataYear.takeLast(30))
+        lineDataWeek = ArrayList(lineDataMonth.takeLast(7))
+
+
+        candleDataMonth = ArrayList(candleDataYear.takeLast(30))
+        candleDataWeek = ArrayList(candleDataYear.takeLast(7))
+
+        labelsYear = historyData.labels
+        labelsMonth = ArrayList(labelsYear.takeLast(30))
+        labelsWeek = ArrayList(labelsYear.takeLast(7))
+
+
+        val linedata:LineDataSet = LineDataSet(lineDataWeek, "Price")
         linedata.color = R.color.colorPrimary
         header.  chart.data = LineData(linedata)
         header.    chart.xAxis.granularity = 1f
-        header.    chart.xAxis.valueFormatter = MyValueFormatter(historyData.labels)
+        header.    chart.xAxis.valueFormatter = MyValueFormatter(labelsYear)
         header.    chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         header.    chart.axisRight.isEnabled = false
         header.   chart.setDrawGridBackground(false)
@@ -192,6 +260,28 @@ class StockActivity : BaseActivity() {
         desc.text = "Recent price history for $sym"
         header.   chart.description = desc
         header.   chart.invalidate()
+    }
+    private fun resetData(){
+        if(type == ChartType.LINE){
+            if(time == ChartTime.WEEK){
+                val linedata:LineDataSet = LineDataSet(lineDataWeek, "Price")
+                header.  chart.data = LineData(linedata)
+            }
+            else if(time == ChartTime.MONTH){
+                val linedata:LineDataSet = LineDataSet(lineDataMonth, "Price")
+                header.  chart.data = LineData(linedata)
+            }
+            else if(time == ChartTime.YEAR){
+                val linedata:LineDataSet = LineDataSet(lineDataYear, "Price")
+                header.  chart.data = LineData(linedata)
+
+            }
+        }
+        else{
+
+        }
+        header.   chart.invalidate()
+
     }
     fun setupNewsList(newsList:ArrayList<NewsItem>){
         val adapter = NewsListAdapter(this, newsList)
@@ -331,6 +421,33 @@ class StockActivity : BaseActivity() {
     }
     numberPicker.invalidate()
 }
+    //spinner stuff
+    override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+        if(parent.id == R.id.time_spinner) {
+            val selection = parent.getItemAtPosition(pos)
+
+            if (selection == "Year") time = ChartTime.YEAR
+            else if (selection == "Month") time = ChartTime.MONTH
+            else if (selection == "Week") time = ChartTime.WEEK
+            else return
+            resetData()
+        }
+        else if(parent.id == R.id.type_spinner){
+            val selection = parent.getItemAtPosition(pos)
+            if (selection == "Line") type = ChartType.LINE
+            else if (selection == "Candlestick") type = ChartType.CANDLESTICK
+            else return
+            resetData()
+        }
+
+
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {
+        //do nothing :)
+    }
 
     inner class MyValueFormatter(private val dates:ArrayList<String>) : IAxisValueFormatter {
         override fun getFormattedValue(value: Float, axis: AxisBase?): String {
