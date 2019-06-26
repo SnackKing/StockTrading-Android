@@ -15,10 +15,7 @@ import android.widget.*
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.CandleEntry
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -249,39 +246,92 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
         val linedata:LineDataSet = LineDataSet(lineDataWeek, "Price")
         linedata.color = R.color.colorPrimary
-        header.  chart.data = LineData(linedata)
-        header.    chart.xAxis.granularity = 1f
-        header.    chart.xAxis.valueFormatter = MyValueFormatter(labelsYear)
-        header.    chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        header.    chart.axisRight.isEnabled = false
-        header.   chart.setDrawGridBackground(false)
-        header.   chart.isAutoScaleMinMaxEnabled = true
+        linedata.setCircleColor(getColor(R.color.black))
+        linedata.valueTextSize = 10f
+        header.chart.data = LineData(linedata)
+        header.chart.xAxis.granularity = 1f
+        header.chart.xAxis.labelRotationAngle = -45f
+        header.chart.xAxis.valueFormatter = MyValueFormatter(labelsYear)
+        header.chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        header.chart.axisRight.isEnabled = false
+        header.chart.setDrawGridBackground(false)
+        header.chart.isAutoScaleMinMaxEnabled = true
+
+        header.candle_stick_chart.xAxis.granularity = 1f
+        header.candle_stick_chart.xAxis.labelRotationAngle = -45f
+        header.candle_stick_chart.xAxis.valueFormatter = MyValueFormatter(labelsYear)
+        header.candle_stick_chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        header.candle_stick_chart.axisRight.isEnabled = false
+        header.candle_stick_chart.setDrawGridBackground(false)
+        header.candle_stick_chart.isAutoScaleMinMaxEnabled = true
         val desc = Description()
         desc.text = "Recent price history for $sym"
         header.   chart.description = desc
+        header.candle_stick_chart.description = desc
+
         header.   chart.invalidate()
     }
     private fun resetData(){
         if(type == ChartType.LINE){
+            header.candle_stick_chart.visibility = View.GONE
+            header.chart.visibility = View.VISIBLE
             if(time == ChartTime.WEEK){
-                val linedata:LineDataSet = LineDataSet(lineDataWeek, "Price")
-                header.  chart.data = LineData(linedata)
+                val lineData = LineDataSet(lineDataWeek, "Price")
+                lineData.color = getColor(R.color.black)
+                lineData.valueTextSize = 10f
+                lineData.setCircleColor(getColor(R.color.black))
+
+                header.  chart.data = LineData(lineData)
             }
             else if(time == ChartTime.MONTH){
-                val linedata:LineDataSet = LineDataSet(lineDataMonth, "Price")
-                header.  chart.data = LineData(linedata)
+                val lineData = LineDataSet(lineDataMonth, "Price")
+                lineData.color = getColor(R.color.black)
+                lineData.valueTextSize = 10f
+                lineData.setCircleColor(getColor(R.color.black))
+                header.  chart.data = LineData(lineData)
             }
             else if(time == ChartTime.YEAR){
-                val linedata:LineDataSet = LineDataSet(lineDataYear, "Price")
-                header.  chart.data = LineData(linedata)
-
+                val lineData = LineDataSet(lineDataYear, "Price")
+                lineData.setCircleColor(getColor(R.color.black))
+                lineData.valueTextSize = 10f
+                lineData.color = getColor(R.color.black)
+                header.  chart.data = LineData(lineData)
             }
+            header.chart.invalidate()
         }
-        else{
+        else if(type == ChartType.CANDLESTICK){
+            header.candle_stick_chart.visibility = View.VISIBLE
+            header.chart.visibility = View.GONE
+            if(time == ChartTime.WEEK){
+                val candleData = CandleDataSet(candleDataWeek, "Price")
+                setCandleColors(candleData)
+                header.candle_stick_chart.data = CandleData(candleData)
+            }
+            else if(time == ChartTime.MONTH){
+                val candleData = CandleDataSet(candleDataMonth, "Price")
+                setCandleColors(candleData)
+                header.candle_stick_chart.data = CandleData(candleData)
+            }
+            else if(time == ChartTime.YEAR){
+                val candleData = CandleDataSet(candleDataYear, "Price")
+                setCandleColors(candleData)
+                header.candle_stick_chart.data = CandleData(candleData)
+            }
+            header.candle_stick_chart.invalidate()
 
         }
-        header.   chart.invalidate()
 
+    }
+    private fun setCandleColors(set:CandleDataSet){
+        set.color = Color.rgb(80, 80, 80)
+        set.shadowColor = resources.getColor(R.color.black)
+        set.shadowWidth = 0.8f
+        set.decreasingColor = resources.getColor(R.color.red)
+        set.decreasingPaintStyle = Paint.Style.FILL
+        set.increasingColor = resources.getColor(R.color.green)
+        set.increasingPaintStyle = Paint.Style.FILL
+        set.neutralColor = Color.LTGRAY
+        set.setDrawValues(false)
     }
     fun setupNewsList(newsList:ArrayList<NewsItem>){
         val adapter = NewsListAdapter(this, newsList)
@@ -295,10 +345,6 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
              }
          }
     }
-
-
-
-
 
     private fun createDialogue(type:Action){
         var numberPicker = NumberPicker(this)
