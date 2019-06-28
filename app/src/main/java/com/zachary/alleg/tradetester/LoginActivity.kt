@@ -7,8 +7,19 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 import org.w3c.dom.Text
+import android.R.id.edit
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import org.jetbrains.anko.doAsync
+
 
 /**
  * A login screen that offers login via email/password.
@@ -66,6 +77,9 @@ class LoginActivity : AppCompatActivity() {
                         val user = auth.currentUser
                         Toast.makeText(baseContext, "Authentication Successful.",
                                 Toast.LENGTH_SHORT).show()
+                        doAsync {
+                            checkIfAfterMarketTradingEnabled(user?.uid)
+                        }
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     } else {
@@ -77,5 +91,31 @@ class LoginActivity : AppCompatActivity() {
                 }
 
     }
+    private fun checkIfAfterMarketTradingEnabled(uid:String?){
+            val ref = FirebaseDatabase.getInstance().reference.child("users").child(uid).child("afterHoursAllowed")
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(data: DataSnapshot) {
+                    if (data.value == null) putInSharedPreferences(false)
+                    else {
+                        val afterHours: Boolean = data.value as Boolean
+                        putInSharedPreferences(afterHours)
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    putInSharedPreferences(false)
+                }
+
+
+            })
+    }
+    fun putInSharedPreferences(value:Boolean){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = preferences.edit()
+        editor.putBoolean("afterHours", value)
+        editor.apply()
+    }
+
 
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -31,6 +32,7 @@ import kotlin.collections.ArrayList
 
 class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     lateinit var header:View
+    var afterHoursAllowed = false
     private lateinit var sym:String
     private lateinit var stock:Stock
     private lateinit var auth: FirebaseAuth
@@ -104,10 +106,15 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
             APIUtils.makeNewsAPICall(sym,this)
         }
         setupSpinners()
+        readSharedPreferences()
 
 
     }
-    fun setupSpinners(){
+    private fun readSharedPreferences(){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        afterHoursAllowed = preferences.getBoolean("afterHours",false)
+    }
+    private fun setupSpinners(){
         val timeSpinner: Spinner = findViewById(R.id.time_spinner)
         ArrayAdapter.createFromResource(
                 this,
@@ -177,7 +184,10 @@ class StockActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         else{
             enable(header.sell)
         }
-        if(!TimeUtils.isMarketOpen()){
+        if(afterHoursAllowed){
+            afterMarket.visibility = View.VISIBLE
+        }
+        else if(!TimeUtils.isMarketOpen()){
             disable(header.buy)
             disable(header.sell)
             closedMarkets.visibility = View.VISIBLE

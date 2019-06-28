@@ -61,6 +61,8 @@
     <string name="show_news">Tap to show news</string>
     <string name="news_error">Something went wrong when trying to get the news. Try again later.</string>
     <string name="code_error">That code does not exist</string>
+    <string name="afterMarketAllowed">The markets are closed, but your account allows after market trading.</string>
+
 
     <string name="year">Year</string>
     <string name="month">Month</string>
